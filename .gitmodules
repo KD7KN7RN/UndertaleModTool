@@ -3,5 +3,5 @@
 	url = https://github.com/Genouka/Underanalyzer.git
 [submodule "UndertaleModToolLocalization"]
 	path = UndertaleModToolLocalization
-	url = git@github.com:QiumingOrg/QiuUTMTv4.git
+	url = https://github.com/KD7KN7RN/QiuUTMTv4.git
 	branch = new-v5
