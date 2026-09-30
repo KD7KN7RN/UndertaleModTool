@@ -54,13 +54,14 @@ const translations = {
 writeFileSync(ar, JSON.stringify(translations, null, 2) + '\n');
 
 let c = readFileSync(i18n, 'utf8');
-c = c.replace("import it from './locales/it.json';", "import it from './locales/it.json';\nimport ar from './locales/ar.json';");
-c = c.replace("  it: {\n    displayName: 'Italian',\n    flag: 'it',\n  },", "  it: {\n    displayName: 'Italian',\n    flag: 'it',\n  },\n  ar: {\n    displayName: 'العربية',\n    flag: 'sa',\n  },");
-c = c.replace("  ko,\n  it,", "  ko,\n  it,\n  ar,");
+if (!c.includes("import ar from './locales/ar.json';")) c = c.replace("import it from './locales/it.json';", "import it from './locales/it.json';\nimport ar from './locales/ar.json';");
+if (!c.includes("  ar: {")) c = c.replace("  it: {\n    displayName: 'Italian',\n    flag: 'it',\n  },", "  it: {\n    displayName: 'Italian',\n    flag: 'it',\n  },\n  ar: {\n    displayName: 'العربية',\n    flag: 'sa',\n  },");
+if (!c.includes("  ar,\n};")) c = c.replace("  ko,\n  it,", "  ko,\n  it,\n  ar,");
 c = c.replace("document.documentElement.lang = locale === 'en' ? 'en' : locale;", "document.documentElement.lang = locale === 'en' ? 'en' : locale;");
 writeFileSync(i18n, c);
 
-let u = readFileSync(ui, 'utf8').replace("export type UiLocale = 'en' | 'ko' | 'it';", "export type UiLocale = 'en' | 'ko' | 'it' | 'ar';").replace("locale: 'en',", "locale: 'ar',");
+let u = readFileSync(ui, 'utf8');
+u = u.replace("export type UiLocale = 'en' | 'ko' | 'it';", "export type UiLocale = 'en' | 'ko' | 'it' | 'ar';").replace("locale: 'en',", "locale: 'ar',");
 writeFileSync(ui, u);
 
 let a = readFileSync(app, 'utf8');
