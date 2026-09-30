@@ -15,7 +15,7 @@ namespace UndertaleModToolAvalonia.Android;
 /// <see cref="AvaloniaAndroidApp.CustomizeAppBuilder"/>.
 /// </summary>
 [Activity(
-    Label = "UndertaleModToolAvalonia",
+    Label = "KDUTMT Editor",
     Theme = "@style/AppTheme",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
