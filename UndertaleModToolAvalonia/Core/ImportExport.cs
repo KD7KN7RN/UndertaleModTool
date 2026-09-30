@@ -25,8 +25,12 @@ public static class ImportExport
 
     public static async Task ImportEmbeddedTexture(UndertaleEmbeddedTexture embeddedTexture, Stream stream)
     {
-        byte[] bytes = new byte[stream.Length];
-        await stream.ReadExactlyAsync(bytes);
+        // Android SAF/provider streams do not reliably expose Length. Copy the selected file
+        // into memory instead of allocating from Stream.Length, which could fail before the
+        // PNG was even read.
+        using MemoryStream buffer = new();
+        await stream.CopyToAsync(buffer);
+        byte[] bytes = buffer.ToArray();
 
         GMImage gmImage = GMImage.FromPng(bytes, verifyHeader: true);
         gmImage.ConvertToFormat(embeddedTexture.TextureData.Image.Format);
