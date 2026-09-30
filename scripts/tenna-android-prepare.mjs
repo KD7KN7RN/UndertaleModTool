@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const root = resolve('External/tenna-editor');
+const root = resolve('UndertaleModToolAvalonia.Android/TennaEditor');
 const i18n = resolve(root, 'src/i18n/index.ts');
 const ui = resolve(root, 'src/store/ui.ts');
 const app = resolve(root, 'src/App.tsx');
