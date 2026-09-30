@@ -24,6 +24,8 @@ public class MainActivity : AvaloniaMainActivity
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+
+        EditorLauncher.OpenTennaEditor = () => StartActivity(typeof(TennaEditorActivity));
         
         // SDL3 on Android resolves its Android context (asset manager, file IO, etc.) through
         // SDLActivity.getContext(), which just returns SDL.getContext(). Apps that host SDL inside
