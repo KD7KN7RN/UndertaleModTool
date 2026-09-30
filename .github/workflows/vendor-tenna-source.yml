@@ -1,0 +1,50 @@
+name: Vendor Tenna Editor source
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vendor:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download Tenna Editor source
+        run: |
+          set -e
+          rm -rf /tmp/tenna
+          mkdir -p /tmp/tenna
+          curl -L --fail --retry 3 \
+            https://github.com/tennaproject/tenna-editor/archive/6163bb3386697472177d2399f9978d04d6b65f77.tar.gz \
+            -o /tmp/tenna.tar.gz
+          tar -xzf /tmp/tenna.tar.gz -C /tmp/tenna --strip-components=1
+
+      - name: Vendor source
+        run: |
+          set -e
+          rm -rf UndertaleModToolAvalonia.Android/TennaEditor
+          mkdir -p UndertaleModToolAvalonia.Android/TennaEditor
+          cp -a /tmp/tenna/. UndertaleModToolAvalonia.Android/TennaEditor/
+          rm -rf UndertaleModToolAvalonia.Android/TennaEditor/.git
+          rm -rf UndertaleModToolAvalonia.Android/TennaEditor/node_modules
+          rm -rf UndertaleModToolAvalonia.Android/TennaEditor/dist
+
+      - name: Commit vendored source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add UndertaleModToolAvalonia.Android/TennaEditor
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Integrate Tenna Editor source into Android project"
+          git push
