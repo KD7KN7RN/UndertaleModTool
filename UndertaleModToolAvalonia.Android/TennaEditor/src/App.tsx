@@ -27,6 +27,7 @@ export function App() {
   useEffect(() => {
     document.documentElement.dataset.locale = locale;
     document.documentElement.lang = locale === 'en' ? 'en' : locale;
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
   useEffect(() => {
