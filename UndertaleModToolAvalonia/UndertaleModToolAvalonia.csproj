@@ -14,7 +14,7 @@
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <SatelliteResourceLanguages>en;zh-CN</SatelliteResourceLanguages>
+        <SatelliteResourceLanguages>en;zh-CN;zh-Hans;ja;ko;pt;tr;arz</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup>
