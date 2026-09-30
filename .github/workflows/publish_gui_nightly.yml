@@ -196,6 +196,22 @@ jobs:
       with:
         distribution: temurin
         java-version: '17'
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: 1.4.0
+    - name: Build offline Arabic Tenna Editor
+      shell: pwsh
+      run: |
+        Set-Location $env:GITHUB_WORKSPACE\External\tenna-editor
+        bun install --frozen-lockfile
+        Set-Location $env:GITHUB_WORKSPACE
+        node .\scripts\tenna-android-prepare.mjs
+        Set-Location $env:GITHUB_WORKSPACE\External\tenna-editor
+        bun run build
+        Set-Location $env:GITHUB_WORKSPACE
+        New-Item -ItemType Directory -Force .\UndertaleModToolAvalonia.Android\Assets\Tenna | Out-Null
+        Copy-Item -Path .\External\tenna-editor\dist\* -Destination .\UndertaleModToolAvalonia.Android\Assets\Tenna -Recurse -Force
     - name: Install Android workload
       run: dotnet workload install android
     - name: Publish Avalonia Android APK
