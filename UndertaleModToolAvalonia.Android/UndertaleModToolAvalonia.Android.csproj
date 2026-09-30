@@ -16,12 +16,12 @@
         <AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
         <NoWarn>$(NoWarn);AVA3001</NoWarn>
 
-        <Version>0.9.1.2</Version>
+        <Version>1.0.0</Version>
 
         <ApplicationId>com.undertalemodtool.avalonia.android</ApplicationId>
-        <ApplicationTitle>QiuUTMTv5</ApplicationTitle>
+        <ApplicationTitle>KDUTMT Editor</ApplicationTitle>
         <ApplicationVersion>1</ApplicationVersion>
-        <ApplicationDisplayVersion>0.9.1.2</ApplicationDisplayVersion>
+        <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 
         <AndroidUseAapt2>true</AndroidUseAapt2>
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
