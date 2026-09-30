@@ -1,6 +1,9 @@
 name: Publish stable release of UndertaleModTool
 
 on:
+  push:
+    paths:
+      - '.github/final-build-trigger.txt'
   workflow_dispatch:
     inputs:
       version:
