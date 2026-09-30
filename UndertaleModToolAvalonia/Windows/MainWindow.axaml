@@ -92,6 +92,11 @@
                 </NativeMenu>
             </NativeMenuItem>
             <NativeMenuItem Header="{l:Loc Menu_Scripts}" />
+            <NativeMenuItem Header="المحررات">
+                <NativeMenu>
+                    <NativeMenuItem Header="محرر حفظ DELTARUNE (أوفلاين)" Command="{Binding OpenEditors}"/>
+                </NativeMenu>
+            </NativeMenuItem>
             <NativeMenuItem Header="{l:Loc Menu_Project}">
                 <NativeMenu>
                     <NativeMenuItem Header="{l:Loc Menu_Project_New}" Command="{Binding ProjectNew}"/>
