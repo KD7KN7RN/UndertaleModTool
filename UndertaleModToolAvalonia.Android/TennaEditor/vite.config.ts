@@ -21,6 +21,7 @@ await generateRobots(branch);
 await generateHeaders(branch);
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     babel({
