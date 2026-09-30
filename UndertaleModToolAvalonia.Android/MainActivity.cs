@@ -17,6 +17,7 @@ namespace UndertaleModToolAvalonia.Android;
 [Activity(
     Label = "KDUTMT Editor",
     Theme = "@style/AppTheme",
+    Icon = "@drawable/kdutmt_icon",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 public class MainActivity : AvaloniaMainActivity
