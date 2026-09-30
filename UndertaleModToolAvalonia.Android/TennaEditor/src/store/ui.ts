@@ -8,7 +8,7 @@ import { useDataPacks } from './data-packs';
 
 export const UI_VERSION = 12;
 
-export type UiLocale = 'en' | 'ko' | 'it';
+export type UiLocale = 'en' | 'ko' | 'it' | 'ar';
 
 export interface Ui {
   locale: UiLocale;
@@ -58,7 +58,7 @@ interface UiState {
 
 function createDefaultUi(): Ui {
   return {
-    locale: 'en',
+    locale: 'ar',
     devmode: false,
     uploadedSaves: 1,
     sidebar: {
