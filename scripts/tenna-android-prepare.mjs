@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 const root = resolve('External/tenna-editor');
 const i18n = resolve(root, 'src/i18n/index.ts');
 const ui = resolve(root, 'src/store/ui.ts');
+const app = resolve(root, 'src/App.tsx');
 const vite = resolve(root, 'vite.config.ts');
 const ar = resolve(root, 'src/i18n/locales/ar.json');
 
@@ -61,6 +62,10 @@ writeFileSync(i18n, c);
 
 let u = readFileSync(ui, 'utf8').replace("locale: 'en',", "locale: 'ar',");
 writeFileSync(ui, u);
+
+let a = readFileSync(app, 'utf8');
+a = a.replace("document.documentElement.lang = locale === 'en' ? 'en' : locale;", "document.documentElement.lang = locale === 'en' ? 'en' : locale;\n    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';");
+writeFileSync(app, a);
 
 let v = readFileSync(vite, 'utf8');
 if (!v.includes("base: './'")) v = v.replace("export default defineConfig({", "export default defineConfig({\n  base: './',");
