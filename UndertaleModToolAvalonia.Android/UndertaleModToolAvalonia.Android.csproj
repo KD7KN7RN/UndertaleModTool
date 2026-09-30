@@ -51,6 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <AndroidAsset Include="Assets\Tenna\**\*" />
         <AndroidResource Include="Resources\drawable\kdutmt_icon.xml" />
         <AndroidResource Include="Resources\values\colors.xml" />
         <AndroidResource Include="Resources\values\styles.xml" />
