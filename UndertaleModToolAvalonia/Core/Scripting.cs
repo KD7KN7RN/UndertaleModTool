@@ -380,7 +380,10 @@ public class ScriptGlobals : IScriptInterface, IDisposable
 
     public string ScriptErrorMessage => throw new NotImplementedException();
 
-    public string? ExePath => Path.GetDirectoryName(Environment.ProcessPath);
+    public string? ExePath
+        => OperatingSystem.IsAndroid()
+            ? ImportExportService.PlatformCacheDirectoryProvider?.Invoke() ?? Path.GetTempPath()
+            : Path.GetDirectoryName(Environment.ProcessPath);
 
     public string ScriptErrorType => throw new NotImplementedException();
 
