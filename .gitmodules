@@ -5,3 +5,6 @@
 	path = UndertaleModToolLocalization
 	url = https://github.com/KD7KN7RN/QiuUTMTv4.git
 	branch = new-v5
+[submodule "External/tenna-editor"]
+	path = External/tenna-editor
+	url = https://github.com/tennaproject/tenna-editor.git
