@@ -1,8 +1,6 @@
 name: Publish stable release of UndertaleModTool
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
     inputs:
       version:
