@@ -697,6 +697,14 @@ await View!.MessageDialog(LocalizationSource.GetString("Msg_WarningsOccurred") +
         }
     }
 
+    public async void OpenEditors()
+    {
+        if (!EditorLauncher.TryOpenTennaEditor())
+        {
+            await View!.MessageDialog("قسم المحررات متاح داخل إصدار Android فقط.");
+        }
+    }
+
     public void ToolsSearchInCode()
     {
         if (View is MainView mainView)
