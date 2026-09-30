@@ -1,7 +1,23 @@
-# UndertaleModTool (Genouka Fork)
+# UndertaleModTool — Arabic Edition (UndertaleModTool العربية)
 
-![GitHub Release](https://img.shields.io/github/v/release/genouka/UndertaleModTool?style=flat) [![GitHub](https://img.shields.io/github/license/genouka/UndertaleModTool?logo=github)](https://github.com/UnderminersTeam/UndertaleModTool/blob/master/LICENSE.txt)
-![GitHub Repo stars](https://img.shields.io/github/stars/genouka/UndertaleModTool?style=flat) [![翻译状态](https://hosted.weblate.org/widget/qiuutmtv4/svg-badge.svg)](https://hosted.weblate.org/engage/qiuutmtv4/) [![Static Badge](https://img.shields.io/badge/Bilibili-%E7%A7%8B%E5%86%A5%E6%95%A3%E9%9B%A8__GenOuka-purple?style=flat-square)](https://space.bilibili.com/3493116076100126) [![Static Badge](https://img.shields.io/badge/Discord-qiuming__official-purple?style=flat-square)](https://discord.com/users/1124397340627845200)
+![GitHub Release](https://img.shields.io/github/v/release/KD7KN7RN/UndertaleModTool?style=flat) [![GitHub](https://img.shields.io/github/license/KD7KN7RN/UndertaleModTool?logo=github)](https://github.com/KD7KN7RN/UndertaleModTool/blob/master/LICENSE.txt) [![Arabic](https://img.shields.io/badge/Language-Arabic-green)](#العربية)
+
+## العربية
+
+هذه نسخة عربية مطوّرة من **UndertaleModTool**، مبنية على نسخة Avalonia متعددة المنصات.
+
+- 🇩🇿 واجهة وتعريب عربي مدمج.
+- دعم Windows وLinux وmacOS وAndroid.
+- دعم تشغيل السكربتات واستيراد الموارد.
+- إصلاحات وتوافقات خاصة بنسخة Android.
+- يتم تضمين ملفات ومكتبات السكربتات المطلوبة داخل نسخة Android.
+- الإصدار النهائي المستهدف: **1.0.0**.
+
+> هذه النسخة غير رسمية ولا تمثل المشروع الأصلي UndertaleModTool.
+
+## التحميل
+
+الإصدارات النهائية متاحة من قسم **Releases** في هذا المستودع.
 
 **This is an unofficial fork of UndertaleModTool!**
 
@@ -29,6 +45,13 @@ If you are looking for the official version instead of the version I forked, ple
 如果你在找官方的版本而不是我Fork的版本，请前往[这里](https://github.com/UnderminersTeam/UndertaleModTool/)
 
 [QQ群](https://qm.qq.com/q/V1LyuIu3IY) |  [哔哩哔哩](https://space.bilibili.com/3493116076100126)
+
+## What does the Arabic edition change?/ما الذي يميز النسخة العربية؟
+
+- Arabic localization integrated into the application.
+- Android script compatibility fixes.
+- Android storage/SAF compatibility fixes for scripts and embedded texture importing.
+- Release build configuration prepared for version 1.0.0.
 
 ## What do I change?/我做了什么修改？
 
