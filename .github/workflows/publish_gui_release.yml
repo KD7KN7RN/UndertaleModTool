@@ -239,9 +239,10 @@ jobs:
         name: ${{ matrix.filename }}
         path: ${{ matrix.filename }}.zip
 
+
   upload:
 
-    needs: [build_gui, build_cli, build_avalonia_gui, build_avalonia_android]
+    needs: [build_avalonia_android]
     runs-on: ubuntu-latest
     steps:
     - name: Download artifacts
