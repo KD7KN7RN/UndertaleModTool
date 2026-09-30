@@ -38,9 +38,14 @@ const FLAG_ASSETS = {
   us: FlagUs,
   kr: FlagKr,
   it: FlagIt,
-};
+} as const;
 
-function LocaleFlag({ country }: { country: keyof typeof FLAG_ASSETS }) {
+type LocaleFlagCountry = keyof typeof FLAG_ASSETS | 'ar';
+
+function LocaleFlag({ country }: { country: LocaleFlagCountry }) {
+  if (country === 'ar') {
+    return <span className="block h-[22px] w-[32px] text-center leading-[22px]">🇸🇦</span>;
+  }
   return (
     <img
       src={FLAG_ASSETS[country]}
