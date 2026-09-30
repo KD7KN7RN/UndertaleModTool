@@ -1,6 +1,8 @@
 name: Publish stable release of UndertaleModTool
 
 on:
+  push:
+    branches: [master]
   workflow_dispatch:
     inputs:
       version:
@@ -24,9 +26,9 @@ jobs:
         singlefile: [true, false]
         include:
           - singlefile: true
-            filename: UndertaleModTool_${{ inputs.version }}-Windows-SingleFile
+            filename: UndertaleModTool_${{ inputs.version || '1.0.0' }}-Windows-SingleFile
           - singlefile: false
-            filename: UndertaleModTool_${{ inputs.version }}-Windows
+            filename: UndertaleModTool_${{ inputs.version || '1.0.0' }}-Windows
 
     runs-on: ${{ matrix.os }}
 
@@ -68,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration: [Debug]
+        configuration: [Release]
         bundled: [true]
         target: [linux-x64, osx-arm64, osx-x64, win-x64]
         include:
@@ -76,22 +78,22 @@ jobs:
             os: ubuntu-latest
             rid: linux-x64
             output: CLI-ubuntu-latest
-            filename: UTMT_CLI_${{ inputs.version }}-Ubuntu
+            filename: UTMT_CLI_${{ inputs.version || '1.0.0' }}-Ubuntu
           - target: osx-arm64
             os: macOS-latest
             rid: osx-arm64
             output: CLI-macOS-latest
-            filename: UTMT_CLI_${{ inputs.version }}-macOS
+            filename: UTMT_CLI_${{ inputs.version || '1.0.0' }}-macOS
           - target: osx-x64
             os: macOS-latest
             rid: osx-x64
             output: CLI-macOS-latest-x86
-            filename: UTMT_CLI_${{ inputs.version }}-macOS-x86
+            filename: UTMT_CLI_${{ inputs.version || '1.0.0' }}-macOS-x86
           - target: win-x64
             os: windows-latest
             rid: win-x64
             output: CLI-windows-latest
-            filename: UTMT_CLI_${{ inputs.version }}-Windows
+            filename: UTMT_CLI_${{ inputs.version || '1.0.0' }}-Windows
 
     runs-on: ${{ matrix.os }}
 
@@ -133,16 +135,16 @@ jobs:
         include:
           - rid: linux-x64
             os: ubuntu-latest
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-Linux
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-Linux
           - rid: win-x64
             os: windows-latest
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-Windows
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-Windows
           - rid: osx-arm64
             os: macOS-latest
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-macOS
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-macOS
           - rid: osx-x64
             os: macOS-latest
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-macOS-x86
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-macOS-x86
 
     runs-on: ${{ matrix.os }}
 
@@ -182,9 +184,9 @@ jobs:
         rid: [android-arm64, android-x64]
         include:
           - rid: android-arm64
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-Android-arm64
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-Android-arm64
           - rid: android-x64
-            filename: UndertaleModToolAvalonia_${{ inputs.version }}-Android-x64
+            filename: UndertaleModToolAvalonia_${{ inputs.version || '1.0.0' }}-Android-x64
 
     runs-on: windows-latest
 
@@ -238,13 +240,13 @@ jobs:
 
         If you encounter any bugs, please submit an issue to this repository on Github.
 
-        If you're not sure which one to download, please download `UndertaleModTool_${{ inputs.version }}-Windows.zip`
+        If you're not sure which one to download, please download `UndertaleModTool_${{ inputs.version || '1.0.0' }}-Windows.zip`
         
         这是由 秋冥散雨_Genouka 开发的非官方版本的 UndertaleModTool。
         
         如果你遇到任何Bug ，请在Github 向此仓库提交 Issue 。
         
-        如果你不清楚该下载哪个，请下载`UndertaleModTool_${{ inputs.version }}-Windows.zip`
+        如果你不清楚该下载哪个，请下载`UndertaleModTool_${{ inputs.version || '1.0.0' }}-Windows.zip`
         
         ## Available builds
         | Name | Platform | Type | Download |
@@ -282,7 +284,7 @@ jobs:
           else
             type="GUI"
           fi
-          echo "| $name | $icon $platform | $type | [Download](https://github.com/${{ github.repository }}/releases/download/${{ inputs.version }}/$name) |" >> release_body.md
+          echo "| $name | $icon $platform | $type | [Download](https://github.com/${{ github.repository }}/releases/download/${{ inputs.version || '1.0.0' }}/$name) |" >> release_body.md
         done
         echo "" >> release_body.md
         echo "## Changelog" >> release_body.md
@@ -292,8 +294,8 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v3
       with:
-        tag_name: ${{ inputs.version }}
-        name: Release ${{ inputs.version }}
+        tag_name: ${{ inputs.version || '1.0.0' }}
+        name: Release ${{ inputs.version || '1.0.0' }}
         prerelease: false
         fail_on_unmatched_files: true
         files: |
