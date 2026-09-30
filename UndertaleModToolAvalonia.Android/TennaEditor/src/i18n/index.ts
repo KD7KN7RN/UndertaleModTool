@@ -32,6 +32,7 @@ import {
 } from '@data';
 import ko from './locales/ko.json';
 import it from './locales/it.json';
+import ar from './locales/ar.json';
 
 export const SUPPORTED_LOCALES = {
   en: {
@@ -46,6 +47,10 @@ export const SUPPORTED_LOCALES = {
     displayName: 'Italian',
     flag: 'it',
   },
+  ar: {
+    displayName: 'العربية',
+    flag: 'sa',
+  },
 } as const;
 
 export type Locale = UiLocale;
@@ -56,6 +61,7 @@ type TranslationValues = Record<string, string | number>;
 const TRANSLATIONS: Record<Exclude<Locale, 'en'>, TranslationDictionary> = {
   ko,
   it,
+  ar,
 };
 
 const FLAG_NAMES_BY_ID = Object.fromEntries(
