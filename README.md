@@ -1,170 +1,154 @@
-# UndertaleModTool — Arabic Edition (UndertaleModTool العربية)
+# UndertaleModTool Arabic — Android Edition
 
-![GitHub Release](https://img.shields.io/github/v/release/KD7KN7RN/UndertaleModTool?style=flat) [![GitHub](https://img.shields.io/github/license/KD7KN7RN/UndertaleModTool?logo=github)](https://github.com/KD7KN7RN/UndertaleModTool/blob/master/LICENSE.txt) [![Arabic](https://img.shields.io/badge/Language-Arabic-green)](#العربية)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Platform](https://img.shields.io/badge/platform-Android-green)
+![Architecture](https://img.shields.io/badge/architecture-arm64%20%7C%20x64-orange)
+![Language](https://img.shields.io/badge/interface-Arabic-blueviolet)
+![License](https://img.shields.io/github/license/KD7KN7RN/UndertaleModTool)
 
-## العربية
+> **نسخة Android عربية متطورة من UndertaleModTool، مصممة لتوفير بيئة متكاملة لتعديل وفحص ألعاب GameMaker مباشرة من الهاتف.**
 
-هذه نسخة عربية مطوّرة من **UndertaleModTool**، مبنية على نسخة Avalonia متعددة المنصات.
+## 🇩🇿 عن المشروع
 
-- 🇩🇿 واجهة وتعريب عربي مدمج.
-- دعم Windows وLinux وmacOS وAndroid.
-- دعم تشغيل السكربتات واستيراد الموارد.
-- إصلاحات وتوافقات خاصة بنسخة Android.
-- يتم تضمين ملفات ومكتبات السكربتات المطلوبة داخل نسخة Android.
-- الإصدار النهائي المستهدف: **1.0.0**.
+**UndertaleModTool Arabic — Android Edition** هو إصدار عربي مخصص للهواتف من UndertaleModTool، مبني على واجهة **Avalonia** ومهيأ للعمل على Android.
 
-> هذه النسخة غير رسمية ولا تمثل المشروع الأصلي UndertaleModTool.
+الهدف من المشروع هو نقل تجربة أدوات تعديل ألعاب GameMaker إلى الهاتف مع الحفاظ على وظائف تحرير الموارد، تشغيل السكربتات، وإدارة ملفات الألعاب، مع توفير **واجهة عربية مدمجة** وتجهيزات خاصة ببيئة Android.
 
-## التحميل
+المشروع ليس مجرد ترجمة للواجهة؛ بل يتضمن تعديلات وتوافقات مخصصة لبيئة الهاتف، خصوصًا في تشغيل السكربتات والوصول إلى الملفات واستيراد الموارد.
 
-الإصدارات النهائية متاحة من قسم **Releases** في هذا المستودع.
+## 📱 التركيز الأساسي: Android
 
-**This is an unofficial fork of UndertaleModTool!**
+تم تطوير هذا الفرع مع إعطاء Android أولوية خاصة:
 
-**这是一个非官方的UndertaleModTool分支。**
+- دعم Android 8.0+ (API 28 وما بعده).
+- واجهة Avalonia محسنة لتعمل كأداة سطح مكتب على الهاتف.
+- دعم معماريات **ARM64 و x64**.
+- توافق مع **Android Storage Access Framework (SAF)** للوصول إلى الملفات والمجلدات.
+- تشغيل سكربتات C# من الهاتف.
+- تضمين ملفات DLL المطلوبة لمحرك السكربتات داخل APK.
+- معالجة اختلافات نظام الملفات في Android.
+- دعم استيراد وتصدير الموارد من خلال مساحة التخزين التي يحددها المستخدم.
+- توافق محسّن مع استيراد **Embedded Textures**.
+- حزم Magick.NET الأصلية الخاصة بـAndroid.
+- دعم SDL3 على Android.
+- إعدادات بناء APK مخصصة لتقليل مشاكل المكتبات الأصلية.
 
-This repository maintains versions for four platforms: Windows, Linux, MacOS, and Android. 
+## 🛠️ أدوات تعديل الموارد
 
-本仓库同时维护 Windows、Linux、MacOS、Android 四个平台的版本。
+يوفر المشروع بيئة متكاملة للعمل مع موارد ألعاب GameMaker، وتشمل:
 
-[Participate in localizing translations on Weblate!](https://hosted.weblate.org/engage/qiuutmtv4/)
+- Sprites
+- Textures / Texture Pages
+- Objects
+- Rooms
+- Code / GML
+- Scripts
+- Fonts
+- Sounds
+- Embedded Textures
+- GameMaker data files
 
-[在 Weblate 平台参与本地化翻译!](https://hosted.weblate.org/engage/qiuutmtv4/)
+كما يتضمن أدوات لاستيراد الموارد، معالجة الصور، ونقل صفحات الـTextures.
 
-[![翻译状态](https://hosted.weblate.org/widget/qiuutmtv4/new_common/multi-auto.svg)](https://hosted.weblate.org/engage/qiuutmtv4/)
+## ⚡ محرك السكربتات
 
-## Download / 下载
+تم تجهيز نسخة Android لتشغيل سكربتات C# داخل التطبيق.
 
-|  Releases (发布包)   | Link / State (链接/状态) 	                                                                                                                                                       |
-|:-----------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|   Stable (稳定版)    | [![Latest Stable Release](https://img.shields.io/github/downloads/genouka/UndertaleModTool/latest/total)](https://github.com/genouka/UndertaleModTool/releases/latest)       |
-|   Nightly (每夜版)   | [![Latest Stable Release](https://img.shields.io/github/downloads/genouka/UndertaleModTool/nightly/total)](https://github.com/genouka/UndertaleModTool/releases/tag/nightly) |
+تشمل تحسينات Android:
 
-If you are looking for the official version instead of the version I forked, please go to [here](https://github.com/UnderminersTeam/UndertaleModTool/)
+- تضمين assemblies المطلوبة لمحرك Roslyn داخل APK.
+- استخدام نسخة Roslyn متوافقة مع بيئة Android.
+- استخراج مراجع السكربتات إلى مساحة تخزين داخلية قابلة للقراءة.
+- دعم مجلدات Android التي لا توفر مسار ملفات تقليديًا.
+- معالجة إخراج السكربتات عبر SAF.
+- إزالة الاعتماد على Windows Forms من السكربتات التي يجب أن تعمل على Android.
 
-如果你在找官方的版本而不是我Fork的版本，请前往[这里](https://github.com/UnderminersTeam/UndertaleModTool/)
+## 🌐 التعريب العربي
 
-[QQ群](https://qm.qq.com/q/V1LyuIu3IY) |  [哔哩哔哩](https://space.bilibili.com/3493116076100126)
+النسخة العربية مدمجة داخل المشروع وليست Patch منفصلًا.
 
-## What does the Arabic edition change?/ما الذي يميز النسخة العربية؟
+يشمل التعريب:
 
-- Arabic localization integrated into the application.
-- Android script compatibility fixes.
-- Android storage/SAF compatibility fixes for scripts and embedded texture importing.
-- Release build configuration prepared for version 1.0.0.
+- واجهة التطبيق.
+- القوائم والأوامر.
+- رسائل النظام.
+- نوافذ الأدوات.
+- رسائل السكربتات.
+- عناصر واجهة تحرير الموارد.
 
-## What do I change?/我做了什么修改？
+ويتم الاحتفاظ بالتعريب داخل مشروع Localization مستقل مرتبط بالمستودع الرئيسي عبر Git submodule.
 
-- Avalonia App for Windows/Linux/MacOS/Android 跨平台支持
+## 🔧 إصلاحات وتوافقات Android
 
-- Add the support of multi-language and localization. 添加多语言和本地化支持
-  
-  [Participate in localizing translations on Weblate!](https://hosted.weblate.org/engage/qiuutmtv4/)
-  
-  ![Preview](images/preview/image-2.png)
+هذا الفرع يضيف طبقة توافق خاصة بالهاتف لمعالجة اختلافات Android عن Windows/Linux/macOS، ومنها:
 
-- Allow to import resources from other datafiles. 允许从其它数据文件导入资源
-  
-  ![Preview](images/preview/image-3.png)
+- Android SAF.
+- مسارات الملفات غير التقليدية.
+- Streams التي لا توفر `Length`.
+- تحميل مكتبات السكربتات من داخل APK.
+- مكتبات Native الخاصة بالصور والصوت.
+- تشغيل السكربتات بدون الاعتماد على مسار تنفيذي تقليدي.
+- استيراد Embedded Texture من ملفات Android.
 
-  ![Preview](images/preview/image-4.png)
+## 🚀 الإصدار 1.0.0
 
-- Add floating information panel documentation for built-in functions, constants, and variables. 添加悬浮信息面板可以显示内置的函数、变量、常量的简易文档
-  
-  ![Preview](images/preview/image.png)
+الإصدار **1.0.0** مخصص كنسخة نهائية للمشروع، وليس نسخة تجريبية.
 
-  ![Preview](images/preview/image-1.png)
+قبل نشر الإصدار، يتم بناء Android في وضع **Release** مع تضمين الموارد والمكتبات المطلوبة.
 
-- Add floating information panel documents for sprites, numbers, etc. 添加悬浮面板快速预览所悬停内容（如精灵图、数字字面量）的信息
-  
-  ![Preview](images/preview/image-5.png)
-  
-  ![Preview](images/preview/image-6.png)
+## 📦 التحميل
 
-- Add control options for automatic line wrapping and displaying whitespace characters to the code editor. They can also be configured with default values from the settings. 为代码编辑器添加自动换行和显示空白字符的控制选项，也可以从设置窗口配置默认值。
-  
-  ![Preview](images/preview/image-7.png)
+الإصدارات الرسمية لهذا الفرع ستكون متاحة من:
 
-  ![Preview](images/preview/image-8.png)
+**Releases → Android**
 
-- Support displaying recently opened files (automatically excluding invalid files). 支持显示最近打开的文件（自动排除无效文件）
-  
-  ![Preview](images/preview/image-9.png)
-  
-- Better search-and-replace panel in code editor (Ctrl+F or Ctrl+H). 更好的代码编辑器搜索替换面板(Ctrl+F 或 Ctrl+H)。
+سيتم توفير APK مناسب للأجهزة المدعومة وفق المعمارية المطلوبة.
 
-  ![Preview](images/preview/image-10.png)
+## 💻 المنصات
 
-- Added full word matching, replacement, and global replacement functions to the search code panel. 为搜索代码的面板添加了全字匹配功能、替换和全局替换功能。
+رغم أن المشروع يركز على Android، فإن البنية الأساسية تدعم أيضًا:
 
-  ![Preview](images/preview/image-11.png)
+- Windows
+- Linux
+- macOS
+- Android
 
-- Support separating tabs into sub windows (drag and drop tab titles outside the window, or right-click on tab titles and click 'Separate to New Window') 支持将标签页分离为子窗口(直接拖拽标签页标题到窗口外，或者右键标签页标题点击分离到新窗口)
-  
-  ![Preview](images/preview/image-12.png)
+لكن **Android هو الهدف الرئيسي لهذا الفرع**.
 
-- Data modification tracking. 数据修改跟踪
-  
-  ![Preview](images/preview/image-13.png)
+## 🧩 بنية المشروع
 
-- Add the built-in batch image import tool. 添加内置的图片批量导入工具
+المستودع يعتمد على عدة مكونات مترابطة:
 
-  ![Preview](images/preview/image-14.png)
+- `UndertaleModTool` — الأدوات والسكربتات والموارد الأساسية.
+- `UndertaleModToolAvalonia` — واجهة التطبيق متعددة المنصات.
+- `UndertaleModToolAvalonia.Android` — طبقة Android وتهيئة APK.
+- `UndertaleModLib` — مكتبة التعامل مع ملفات وموارد GameMaker.
+- `UndertaleModToolLocalization` — ملفات التعريب والترجمة.
 
-- Add the texture page migration tool. 添加纹理页迁移工具
+## ⚠️ ملاحظة
 
-  ![Preview](images/preview/image-15.png)
+هذا المشروع **Fork غير رسمي** من UndertaleModTool. جميع الحقوق المتعلقة بالمشروع الأصلي تعود إلى أصحابها ومساهميها.
 
-  ![Preview](images/preview/image-16.png)
+هذا الفرع يركز على توفير تجربة عربية وعملية على Android، ولا يدعي أنه الإصدار الرسمي من UndertaleModTool.
 
-  ![Preview](images/preview/image-17.png)
+## 🙏 Credits
 
-  ![Preview](images/preview/image-18.png)
+المشروع يعتمد على أعمال ومكونات من:
 
-- Improved performance, reduced memory usage, optimized UI thread lag. 提高了性能，减少内存占用，优化了UI线程卡顿。
+- UndertaleModTool — المشروع الأصلي.
+- Avalonia — واجهة المستخدم متعددة المنصات.
+- UndertaleModTool Android/Avalonia contributions.
+- Magick.NET — معالجة الصور.
+- SDL3 — دعم الوسائط.
+- Roslyn — تشغيل وتحليل C#.
+- مساهمي مشروع UndertaleModTool ومشاريع Android ذات الصلة.
 
-- Support to use as a MCP Server for AI calling. See [this](MCP.md) for detail. 支持作为MCP服务器使用，点[这里](MCP.md)查看文档。
+## 📄 License
 
-- Auto-complete code 自动补全代码
+هذا المشروع يتبع ترخيص المشروع الأساسي والمكونات المستخدمة فيه. راجع ملف `LICENSE.txt` للتفاصيل.
 
-  ![Preview](images/preview/img.png)
+---
 
-- Real-time static error checking and parameter matching checking 实时静态错误检查和参数匹配检查
+### UndertaleModTool Arabic — Android Edition
 
-  ![Preview](images/preview/img_1.png)
-
-- Code editor dual-color theme and its settings 代码编辑器双色主题及其设置
-
-    ![Preview](images/preview/img_2.png)
-    
-    ![Preview](images/preview/img_3.png)
-
-- Better context menu 更好的上下文菜单
-
-  ![Preview](images/preview/img_4.png)
-
-  ![Preview](images/preview/img_5.png)
-
-- Auto check for updates (can close) 自动检查更新功能（可以关闭）
-
-- A more detailed and accurate code analyzer (type propagation and constant folding) 更详细准确的代码分析器（类型传播和常量展开）
-
-- Actively synchronize upstream code, usually no longer than a week 积极同步上游代码，通常不会超过一周
-
-- GMRT VM Support. 支持GMRT VM。
-
-## 鸣谢/Thanks
-如果没有以下项目作为基础，本项目将永远不会诞生！
-
-Without the following projects as a foundation, this project would never have been born!
-
-- [UndertaleModTool(UnderminersTeam)](https://github.com/UnderminersTeam/UndertaleModTool/) Original version of UndertaleModTool
-- [UndertaleModTool(luizzeroxis)](https://github.com/luizzeroxis/UndertaleModTool/) Avalonia version for desktop
-- [GUTMT4A(Genouka)](https://github.com/QiumingOrg/GUTMT4A) Android version(v3)
-- [QiuUTMTv4(Genouka)](https://github.com/QiumingOrg/QiuUTMTv4) Android version(v4)
-- [QiuMagickNet(Genouka)](https://github.com/orgs/QiuMagickNet/repositories) Build `Magick.NET` nupkgs for Android.
-  
-## 捐赠/Donate
-
-Wechat/微信:
-![mm_reward_qrcode](https://github.com/user-attachments/assets/8f442af8-fba5-41fb-ac19-0977744520a0)
+**GameMaker Modding • Android • Arabic Localization • C# Scripting • Resource Editing**
