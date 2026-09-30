@@ -49,7 +49,7 @@ export const SUPPORTED_LOCALES = {
   },
   ar: {
     displayName: 'العربية',
-    flag: 'sa',
+    flag: 'ar',
   },
 } as const;
 
