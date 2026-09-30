@@ -1,9 +1,6 @@
 name: Publish stable release of UndertaleModTool
 
 on:
-  push:
-    paths-ignore:
-      - '.github/workflows/publish_gui_release.yml'
   workflow_dispatch:
     inputs:
       version:
