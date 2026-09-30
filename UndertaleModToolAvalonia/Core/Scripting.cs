@@ -355,6 +355,8 @@ public class ScriptGlobals : IScriptInterface, IDisposable
 
     public void Dispose()
     {
+        FinalizePendingStorageExport();
+
         // Runs on whatever thread the script ended on; closing the simulated window touches the
         // visual tree, so it must be marshaled to the UI thread.
         Dispatcher.UIThread.Invoke(CloseLoaderWindow);
@@ -523,10 +525,11 @@ public class ScriptGlobals : IScriptInterface, IDisposable
         return true;
     }
 
+    private IStorageFolder? pendingStorageFolder;
+    private string? pendingStorageTempDirectory;
+
     public string? PromptChooseDirectory()
     {
-        // The dialog is shown on the UI thread while this (script) thread blocks: the Android SAF
-        // pickers need the main thread to launch their intent and deliver the result.
         IReadOnlyList<IStorageFolder>? folders = ShowDialogBlocking(() => mainVM.View!.OpenFolderDialog(new()
         {
             Title = LocalizationSource.GetString("Msg_SelectDirectory"),
@@ -535,7 +538,96 @@ public class ScriptGlobals : IScriptInterface, IDisposable
         if (folders is null || folders.Count != 1)
             return null;
 
-        return folders[0].TryGetLocalPath();
+        string? localPath = folders[0].TryGetLocalPath();
+        if (localPath is not null)
+            return localPath;
+
+        // Android SAF providers such as Downloads/cloud storage may expose content:// folders
+        // without a local path. Path-based scripts need a local staging directory, so copy the
+        // generated files back to the selected SAF folder when the script finishes.
+        string tempDirectory = Path.Combine(Path.GetTempPath(), "umt-script-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempDirectory);
+
+        pendingStorageFolder?.Dispose();
+        pendingStorageFolder = folders[0];
+        pendingStorageTempDirectory = tempDirectory;
+        return tempDirectory;
+    }
+
+    void FinalizePendingStorageExport()
+    {
+        if (pendingStorageFolder is not { } folder || pendingStorageTempDirectory is not { } tempDirectory)
+            return;
+
+        pendingStorageFolder = null;
+        pendingStorageTempDirectory = null;
+
+        try
+        {
+            if (Directory.Exists(tempDirectory))
+                CopyDirectoryToStorageFolder(tempDirectory, folder);
+        }
+        catch (Exception e)
+        {
+            ShowDialogBlocking(() => mainVM.View!.MessageDialog(
+                $"Failed to copy script output to the selected folder:\n{e.Message}",
+                title: LocalizationSource.GetString("Msg_ScriptMessageTitle")));
+        }
+        finally
+        {
+            try
+            {
+                if (Directory.Exists(tempDirectory))
+                    Directory.Delete(tempDirectory, recursive: true);
+            }
+            catch
+            {
+            }
+
+            folder.Dispose();
+        }
+    }
+
+    static void CopyDirectoryToStorageFolder(string sourceDirectory, IStorageFolder destination)
+    {
+        foreach (string directory in Directory.GetDirectories(sourceDirectory))
+        {
+            string name = Path.GetFileName(directory);
+            IStorageFolder? child = destination.GetFolderAsync(name).GetAwaiter().GetResult()
+                ?? destination.CreateFolderAsync(name).GetAwaiter().GetResult();
+            if (child is null)
+                continue;
+
+            try
+            {
+                CopyDirectoryToStorageFolder(directory, child);
+            }
+            finally
+            {
+                child.Dispose();
+            }
+        }
+
+        foreach (string filePath in Directory.GetFiles(sourceDirectory))
+        {
+            string name = Path.GetFileName(filePath);
+            IStorageFile? target = destination.GetFileAsync(name).GetAwaiter().GetResult()
+                ?? destination.CreateFileAsync(name).GetAwaiter().GetResult();
+            if (target is null)
+                continue;
+
+            try
+            {
+                using Stream source = File.OpenRead(filePath);
+                using Stream output = target.OpenWriteAsync().GetAwaiter().GetResult();
+                source.CopyTo(output);
+                output.Flush();
+            }
+            finally
+            {
+                target.Dispose();
+            }
+        }
     }
 
     public string? PromptLoadFile(string? defaultExt, string? filter)
