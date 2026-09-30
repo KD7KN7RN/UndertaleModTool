@@ -219,7 +219,7 @@ jobs:
         bun run build
         Set-Location $env:GITHUB_WORKSPACE
         New-Item -ItemType Directory -Force .\UndertaleModToolAvalonia.Android\Assets\Tenna | Out-Null
-        Copy-Item -Path .\External\tenna-editor\dist\* -Destination .\UndertaleModToolAvalonia.Android\Assets\Tenna -Recurse -Force
+        Copy-Item -Path .\UndertaleModToolAvalonia.Android\TennaEditor\dist\* -Destination .\UndertaleModToolAvalonia.Android\Assets\Tenna -Recurse -Force
     - name: Install Android workload
       run: dotnet workload install android
     - name: Publish Avalonia Android APK
