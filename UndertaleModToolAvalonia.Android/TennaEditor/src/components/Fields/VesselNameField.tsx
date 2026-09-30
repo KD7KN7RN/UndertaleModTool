@@ -1,0 +1,33 @@
+import { FieldWrapper, TextInput } from '@components';
+import { useSave } from '@store';
+import { useTranslation } from '../../i18n';
+
+interface VesselNameFieldProps {
+  id?: string;
+  className?: string;
+}
+
+export function VesselNameField({ id, className }: VesselNameFieldProps) {
+  const { t } = useTranslation();
+  const vesselName = useSave((s) => s.save?.vesselName) ?? '';
+  const updateSave = useSave((s) => s.updateSave);
+
+  function onChange(value: string) {
+    updateSave((save) => (save.vesselName = value));
+  }
+
+  return (
+    <FieldWrapper
+      id={id}
+      className={className}
+      title={t('ui.field.name', 'Name')}
+      label
+    >
+      <TextInput
+        value={vesselName}
+        placeholder={t('ui.field.selectVesselName', 'Enter vessel name...')}
+        onChange={onChange}
+      />
+    </FieldWrapper>
+  );
+}

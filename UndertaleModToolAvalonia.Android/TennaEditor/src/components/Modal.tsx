@@ -1,0 +1,136 @@
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, type ReactNode } from 'react';
+import CloseIcon from '@assets/icons/close.svg?react';
+import { createPortal } from 'react-dom';
+import { mergeClass } from '@utils/merge-class';
+import { useTranslation } from '../i18n';
+
+interface ModalProps {
+  children: ReactNode;
+  isOpen: boolean;
+  setOpen: (state: boolean) => void;
+  onClose?: () => void;
+  panelClassName?: string;
+}
+
+export function Modal({
+  children,
+  isOpen,
+  setOpen,
+  onClose,
+  panelClassName,
+}: ModalProps) {
+  const { t } = useTranslation();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const reducedMotion = useReducedMotion();
+
+  const transition = {
+    type: 'tween',
+    duration: reducedMotion ? 0 : 0.2,
+    ease: 'easeInOut',
+  } as const;
+
+  // Prevent background scroll
+  useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      dialog.focus();
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Tab') {
+          const focusableElements = dialog.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+          const firstElement = focusableElements[0] as HTMLElement;
+          const lastElement = focusableElements[
+            focusableElements.length - 1
+          ] as HTMLElement;
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              lastElement.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              firstElement.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      };
+
+      dialog.addEventListener('keydown', handleKeyDown);
+      return () => dialog.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen]);
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            className="fixed inset-0 bg-overlay backdrop-blur-[1px] z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+            style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
+            onClick={() => {
+              if (onClose) onClose();
+              setOpen(false);
+            }}
+          />
+
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={transition}
+          >
+            <div
+              ref={dialogRef}
+              tabIndex={-1}
+              role="dialog"
+              aria-modal="true"
+              aria-hidden={!isOpen}
+              className={mergeClass(
+                'pointer-events-auto relative border border-border bg-surface-2 shadow-lg shadow-surface-1/50 transition-[width,height,max-width,max-height] duration-200 ease-in-out motion-reduce:transition-none outline-none',
+                panelClassName,
+              )}
+            >
+              <button
+                type="button"
+                aria-label={t('ui.common.close', 'Close')}
+                className="absolute top-2 right-2 inline-flex items-center justify-center w-6 h-6 motion-reduce:transition-none transition-all duration-200 text-text-2 hover:text-text-1"
+                onClick={() => {
+                  if (onClose) onClose();
+                  setOpen(false);
+                }}
+              >
+                <span className="w-4 h-4">
+                  <CloseIcon />
+                </span>
+              </button>
+              {children}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body,
+  );
+}

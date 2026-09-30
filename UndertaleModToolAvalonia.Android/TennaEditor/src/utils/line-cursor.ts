@@ -1,0 +1,100 @@
+export class LineCursor {
+  private lines: string[];
+  private position = 0;
+
+  constructor(content: string) {
+    const normalized = content
+      .replace(/^\uFEFF/, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n');
+    this.lines = normalized.split('\n');
+
+    // Drop only the empty segment from a trailing newline, not blank lines.
+    if (this.lines.length > 0 && this.lines[this.lines.length - 1] === '') {
+      this.lines.pop();
+    }
+  }
+
+  get totalLines(): number {
+    return this.lines.length;
+  }
+
+  get currentPosition(): number {
+    return this.position;
+  }
+
+  get isAtEnd(): boolean {
+    return this.position >= this.lines.length;
+  }
+
+  skip(count: number): void {
+    this.position = Math.min(this.position + count, this.lines.length);
+  }
+
+  reset(): void {
+    this.position = 0;
+  }
+
+  nextString(): string {
+    return this.nextLine();
+  }
+
+  nextNumber(): number {
+    const line = this.nextLine();
+
+    const trimmed = line.trim().toLowerCase();
+    if (
+      trimmed === '' ||
+      trimmed === 'null' ||
+      trimmed === 'undefined' ||
+      trimmed === 'nan'
+    ) {
+      return 0;
+    }
+
+    const parsed = Number(line);
+    if (isNaN(parsed)) {
+      throw new Error(
+        `Failed to parse number from line ${this.position}: "${line}"`,
+      );
+    }
+    return parsed;
+  }
+
+  nextInteger(): number | string {
+    const line = this.nextLine();
+    const trimmed = line.trim().toLowerCase();
+    if (
+      trimmed === '' ||
+      trimmed === 'null' ||
+      trimmed === 'undefined' ||
+      trimmed === 'nan'
+    ) {
+      return 0;
+    }
+    if (!/^-?\d+$/.test(trimmed)) {
+      const parsed = Number(line);
+      if (!Number.isFinite(parsed)) {
+        throw new Error(
+          `Failed to parse integer from line ${this.position}: "${line}"`,
+        );
+      }
+      return parsed;
+    }
+    const parsed = BigInt(trimmed);
+    return parsed >= BigInt(Number.MIN_SAFE_INTEGER) &&
+      parsed <= BigInt(Number.MAX_SAFE_INTEGER)
+      ? Number(parsed)
+      : parsed.toString();
+  }
+
+  private nextLine(): string {
+    if (this.isAtEnd) {
+      throw new Error(`Unexpected end of file at line ${this.position + 1}`);
+    }
+
+    const line = this.lines[this.position];
+    this.position += 1;
+    return line;
+  }
+}

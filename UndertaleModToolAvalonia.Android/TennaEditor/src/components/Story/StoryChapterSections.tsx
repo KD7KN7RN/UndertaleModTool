@@ -1,0 +1,117 @@
+import { ProgressiveMount } from '@components/ProgressiveMount';
+import { useFieldSearch } from '@contexts';
+import { FLAGS, type FlagName } from '@data';
+import type { FlagEntry } from '@types';
+import { useGameData } from '@store';
+import { FLAG_BITFIELDS, FLAG_BITFIELDS_META } from '@data/flag-bitfields';
+import {
+  STORY_SECTIONS,
+  type StoryChapterNumber,
+  type StoryFieldName,
+} from '@data/story-sections';
+import { useLocation } from 'react-router-dom';
+import { StoryFlagCluster } from './StoryFlagCluster';
+import { StoryFlagGrid } from './StoryFlagGrid';
+import { StorySection } from './StorySection';
+
+interface StoryChapterSectionsProps {
+  chapter: StoryChapterNumber;
+}
+
+function flagMatchesQuery(
+  flag: StoryFieldName,
+  query: string,
+  entries: ReadonlyMap<number, FlagEntry>,
+): boolean {
+  const bitfield =
+    flag in FLAG_BITFIELDS
+      ? FLAG_BITFIELDS_META[FLAG_BITFIELDS[flag as keyof typeof FLAG_BITFIELDS]]
+      : undefined;
+  const flagId = bitfield ? bitfield.parent : FLAGS[flag as FlagName];
+  const meta = bitfield ?? entries.get(flagId);
+
+  const idQuery = /^#?(\d+)$/.exec(query);
+  if (idQuery) return flagId === Number(idQuery[1]);
+
+  const haystack = `${flag} ${meta?.displayName ?? ''} ${meta?.description ?? ''}`;
+  return haystack.toLowerCase().includes(query);
+}
+
+function filterSection(
+  section: (typeof STORY_SECTIONS)[StoryChapterNumber][number],
+  query: string,
+  entries: ReadonlyMap<number, FlagEntry>,
+) {
+  if ('flags' in section) {
+    const flags = section.flags.filter((flag) =>
+      flagMatchesQuery(flag, query, entries),
+    );
+    return flags.length > 0 ? { ...section, flags } : null;
+  }
+
+  const clusters = section.clusters
+    .map((cluster) => ({
+      ...cluster,
+      flags: cluster.flags.filter((flag) =>
+        flagMatchesQuery(flag, query, entries),
+      ),
+    }))
+    .filter((cluster) => cluster.flags.length > 0);
+
+  return clusters.length > 0 ? { ...section, clusters } : null;
+}
+
+export function StoryChapterSections({ chapter }: StoryChapterSectionsProps) {
+  const location = useLocation();
+  const entries = useGameData((state) => state.flags.byId);
+  const sections = STORY_SECTIONS[chapter];
+  const query = useFieldSearch()?.trim().toLowerCase();
+
+  const filteredSections = query
+    ? sections.flatMap((section) => {
+        const filteredSection = filterSection(section, query, entries);
+        return filteredSection ? [filteredSection] : [];
+      })
+    : sections;
+
+  if (query && filteredSections.length === 0) {
+    return (
+      <p className="text-text-2 italic px-1 py-4">
+        No story fields match &ldquo;{query}&rdquo;.
+      </p>
+    );
+  }
+
+  return (
+    <>
+      {filteredSections.map((section, index) => {
+        const content = (
+          <StorySection id={section.id} title={section.title}>
+            {'flags' in section ? (
+              <StoryFlagGrid flags={[...section.flags]} />
+            ) : (
+              <div className="flex flex-col gap-5">
+                {section.clusters.map((cluster) => (
+                  <StoryFlagCluster
+                    key={cluster.id}
+                    id={cluster.id}
+                    title={cluster.title}
+                    flags={[...cluster.flags]}
+                  />
+                ))}
+              </div>
+            )}
+          </StorySection>
+        );
+
+        return location.hash ? (
+          <div key={section.id}>{content}</div>
+        ) : (
+          <ProgressiveMount key={section.id} delayMs={index * 20}>
+            {content}
+          </ProgressiveMount>
+        );
+      })}
+    </>
+  );
+}

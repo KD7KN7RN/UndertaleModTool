@@ -1,0 +1,35 @@
+import { Checkbox, FieldWrapper } from '@components';
+import { useSave } from '@store';
+import { useTranslation } from '../../i18n';
+
+interface SaveIsCompletionSaveFieldProps {
+  id?: string;
+  className?: string;
+}
+
+export function SaveIsCompletionSaveField({
+  id,
+  className,
+}: SaveIsCompletionSaveFieldProps) {
+  const { t } = useTranslation();
+  const isCompletionSave =
+    useSave((s) => s.save?.meta.isCompletionSave) ?? false;
+  const updateSave = useSave((s) => s.updateSave);
+
+  function onChange(checked: boolean) {
+    if (isCompletionSave === checked) return;
+    updateSave((save) => {
+      save.meta.isCompletionSave = checked;
+    });
+  }
+
+  return (
+    <FieldWrapper id={id} className={className} inline>
+      <Checkbox
+        label={t('ui.field.completionSave', 'Completion save')}
+        checked={isCompletionSave}
+        onChange={onChange}
+      />
+    </FieldWrapper>
+  );
+}

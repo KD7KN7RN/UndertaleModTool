@@ -1,0 +1,135 @@
+import {
+  Card,
+  GlowBar,
+  Heading,
+  ItemField,
+  LightWorldLoadoutField,
+  LightWorldStatsField,
+  Page,
+  Section,
+} from '@components';
+import { mergeClass } from '@utils';
+import DividerIcon from '@assets/icons/minus.svg?react';
+import KrisIcon from '@assets/deltarune/characters/kris.svg?react';
+import { useTranslation } from '../../i18n';
+
+const THEME = {
+  bg: 'bg-[#a6ab2f]',
+  shadow: 'shadow-[#a6ab2f]',
+  text: 'text-[#a6ab2f]',
+} as const;
+
+export function LightWorldRoot() {
+  const { t } = useTranslation();
+
+  return (
+    <Page>
+      <Page.TopBar title={t('ui.nav.lightWorld', 'Light World')} />
+      <Page.Content>
+        <div className="page">
+          <div className="flex flex-col lg:flex-row gap-3 lg:items-stretch">
+            <Section id="main" className="flex min-h-fit flex-1 flex-col">
+              <Card className="flex flex-col justify-between flex-1">
+                <div className="flex flex-col">
+                  <Section
+                    id="main-title"
+                    className="flex flex-col items-center border-b border-divider px-2 py-4"
+                  >
+                    <Heading level={4} className="uppercase my-1">
+                      {t('ui.nav.lightWorld', 'Light World')}
+                    </Heading>
+                    <span
+                      className={mergeClass(
+                        'inline-flex h-24 w-24 shrink-0 items-center justify-center',
+                        THEME.text,
+                      )}
+                      aria-hidden
+                    >
+                      <KrisIcon className="h-full w-full" />
+                    </span>
+                    <Heading
+                      level={2}
+                      className={mergeClass('uppercase', THEME.text)}
+                    >
+                      Kris
+                    </Heading>
+                  </Section>
+                  <div className="flex flex-col gap-12 px-6 py-6">
+                    <Section
+                      id="health"
+                      className="flex justify-between items-end w-full"
+                    >
+                      <LightWorldStatsField type="health" id="current-health" />
+                      <span className="h-5 w-5 mb-3 mx-3 text-text-2">
+                        <DividerIcon />
+                      </span>
+                      <LightWorldStatsField type="maxHealth" id="max-health" />
+                    </Section>
+                    <Section id="stats" className="grid grid-cols-2 gap-4">
+                      <LightWorldStatsField type="level" id="level" />
+                      <LightWorldStatsField type="experience" id="experience" />
+                      <LightWorldStatsField type="attack" id="attack" />
+                      <LightWorldStatsField type="defence" id="defence" />
+                    </Section>
+
+                    <div className="flex flex-col gap-4">
+                      <LightWorldLoadoutField type="weapon" id="weapon" />
+                      <LightWorldLoadoutField type="armor" id="armor" />
+                    </div>
+                  </div>
+                </div>
+                <GlowBar bg={THEME.bg} shadow={THEME.shadow} />
+              </Card>
+            </Section>
+            <div className="flex min-h-fit flex-6/16 flex-col gap-3">
+              <Section id="items" className="flex">
+                <Card className="flex-1 p-6 flex gap-3 flex-col">
+                  <Section>
+                    <Heading level={4}>
+                      {t('ui.lightWorld.items', 'Items')}
+                    </Heading>
+                    <div className="text-text-2">
+                      <p>
+                        {t(
+                          'ui.lightWorld.itemsDescription',
+                          'This inventory applies to Light World only.',
+                        )}
+                      </p>
+                    </div>
+
+                    <div className="w-full grid lg:grid-cols-4 gap-4 mt-8">
+                      {INVENTORY_SLOTS.map((slot) => (
+                        <ItemField
+                          key={slot}
+                          slot={slot}
+                          type="lightWorldItem"
+                        />
+                      ))}
+                    </div>
+                  </Section>
+                </Card>
+              </Section>
+              <Section id="phone-contacts" className="flex flex-1">
+                <Card className="flex-1 p-6 flex gap-3 flex-col">
+                  <Section>
+                    <Heading level={4}>
+                      {t('ui.lightWorld.phoneContacts', 'Phone Contacts')}
+                    </Heading>
+                    <div className="w-full grid lg:grid-cols-4 gap-4 mt-8">
+                      {PHONE_CONTACT_SLOTS.map((slot) => (
+                        <ItemField key={slot} slot={slot} type="phoneContact" />
+                      ))}
+                    </div>
+                  </Section>
+                </Card>
+              </Section>
+            </div>
+          </div>
+        </div>
+      </Page.Content>
+    </Page>
+  );
+}
+
+const INVENTORY_SLOTS = [0, 1, 2, 3, 4, 5, 6, 7];
+const PHONE_CONTACT_SLOTS = [0, 1, 2, 3, 4, 5, 6, 7];

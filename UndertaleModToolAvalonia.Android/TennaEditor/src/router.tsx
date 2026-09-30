@@ -1,0 +1,377 @@
+import React, { Suspense, type JSX } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import {
+  RequireChapter,
+  RequireDevmode,
+  RequireSave,
+  RememberSubtabRedirect,
+} from '@guards';
+import { Loading } from '@components/Loading';
+import { getLastSubtab } from '@utils/last-subtab';
+
+// Home
+const HomeRoot = React.lazy(() =>
+  import('./pages/Home/Root').then((module) => ({
+    default: module.HomeRoot,
+  })),
+);
+const HomeOverview = React.lazy(() =>
+  import('./pages/Home/Overview').then((module) => ({
+    default: module.HomeOverview,
+  })),
+);
+const HomeWelcome = React.lazy(() =>
+  import('./pages/Home/Welcome').then((module) => ({
+    default: module.HomeWelcome,
+  })),
+);
+
+// Inventory
+const InventoryRoot = React.lazy(() =>
+  import('./pages/Inventory/Root').then((module) => ({
+    default: module.InventoryRoot,
+  })),
+);
+const InventoryConsumables = React.lazy(() =>
+  import('./pages/Inventory/Consumables').then((module) => ({
+    default: module.InventoryConsumables,
+  })),
+);
+const InventoryKeyItems = React.lazy(() =>
+  import('./pages/Inventory/KeyItems').then((module) => ({
+    default: module.InventoryKeyItems,
+  })),
+);
+const InventoryWeapons = React.lazy(() =>
+  import('./pages/Inventory/Weapons').then((module) => ({
+    default: module.InventoryWeapons,
+  })),
+);
+const InventoryArmors = React.lazy(() =>
+  import('./pages/Inventory/Armors').then((module) => ({
+    default: module.InventoryArmors,
+  })),
+);
+
+// Party
+const PartyRoot = React.lazy(() =>
+  import('./pages/Party/Root').then((module) => ({
+    default: module.PartyRoot,
+  })),
+);
+const PartyOverview = React.lazy(() =>
+  import('./pages/Party/Overview').then((module) => ({
+    default: module.PartyOverview,
+  })),
+);
+const PartyKris = React.lazy(() =>
+  import('./pages/Party/Kris').then((module) => ({
+    default: module.PartyKris,
+  })),
+);
+const PartySusie = React.lazy(() =>
+  import('./pages/Party/Susie').then((module) => ({
+    default: module.PartySusie,
+  })),
+);
+const PartyRalsei = React.lazy(() =>
+  import('./pages/Party/Ralsei').then((module) => ({
+    default: module.PartyRalsei,
+  })),
+);
+const PartyNoelle = React.lazy(() =>
+  import('./pages/Party/Noelle').then((module) => ({
+    default: module.PartyNoelle,
+  })),
+);
+
+// Light World
+const LightWorldRoot = React.lazy(() =>
+  import('./pages/LightWorld/Root').then((module) => ({
+    default: module.LightWorldRoot,
+  })),
+);
+
+// Story
+const StoryRoot = React.lazy(() =>
+  Promise.all([
+    import('./pages/Story/Root'),
+    import('./pages/Story/Chapter1'),
+  ]).then(([root]) => ({
+    default: root.StoryRoot,
+  })),
+);
+
+const StoryChapter1 = React.lazy(() =>
+  import('./pages/Story/Chapter1').then((module) => ({
+    default: module.StoryChapter1,
+  })),
+);
+
+const StoryChapter2 = React.lazy(() =>
+  import('./pages/Story/Chapter2').then((module) => ({
+    default: module.StoryChapter2,
+  })),
+);
+
+const StoryChapter3 = React.lazy(() =>
+  import('./pages/Story/Chapter3').then((module) => ({
+    default: module.StoryChapter3,
+  })),
+);
+
+const StoryChapter4 = React.lazy(() =>
+  import('./pages/Story/Chapter4').then((module) => ({
+    default: module.StoryChapter4,
+  })),
+);
+
+const StoryChapter5 = React.lazy(() =>
+  import('./pages/Story/Chapter5').then((module) => ({
+    default: module.StoryChapter5,
+  })),
+);
+
+// Recruits
+const RecruitsRoot = React.lazy(() =>
+  import('./pages/Recruits/Root').then((module) => ({
+    default: module.RecruitsRoot,
+  })),
+);
+// Flags
+const FlagsRoot = React.lazy(() =>
+  import('./pages/Flags/Root').then((module) => ({
+    default: module.FlagsRoot,
+  })),
+);
+
+// Devtools
+let DevtoolsRoot: React.LazyExoticComponent<() => JSX.Element> | null = null;
+let DevtoolsColors: React.LazyExoticComponent<() => JSX.Element> | null = null;
+if (import.meta.env.VITE_DEVTOOLS_TAB === 'true') {
+  DevtoolsRoot = React.lazy(() =>
+    import('@devtools/pages/Root').then((module) => ({
+      default: module.DevtoolsRoot,
+    })),
+  );
+
+  DevtoolsColors = React.lazy(() =>
+    import('@devtools/pages/Colors').then((module) => ({
+      default: module.DevtoolsColors,
+    })),
+  );
+}
+
+// Settings
+const SettingsRoot = React.lazy(() =>
+  import('./pages/Settings/Root').then((module) => ({
+    default: module.SettingsRoot,
+  })),
+);
+
+// About
+const AboutPage = React.lazy(() =>
+  import('./pages/About/Root').then((module) => ({
+    default: module.AboutRoot,
+  })),
+);
+const AboutOverview = React.lazy(() =>
+  import('./pages/About/Overview').then((module) => ({
+    default: module.AboutOverview,
+  })),
+);
+const AboutChangelog = React.lazy(() =>
+  import('./pages/About/Changelog').then((module) => ({
+    default: module.AboutChangelog,
+  })),
+);
+const AboutLicense = React.lazy(() =>
+  import('./pages/About/License').then((module) => ({
+    default: module.AboutLicense,
+  })),
+);
+const AboutAttributions = React.lazy(() =>
+  import('./pages/About/Attributions').then((module) => ({
+    default: module.AboutAttributions,
+  })),
+);
+
+function HomeIndex() {
+  const { hash } = useLocation();
+  const sectionHash = hash.includes('=') ? '' : hash;
+  if (getLastSubtab('home') === 'welcome') {
+    return <Navigate to={`welcome${sectionHash}`} replace />;
+  }
+  return <HomeOverview />;
+}
+
+export function AppRouter() {
+  return (
+    <AnimatePresence mode="wait">
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<HomeRoot />}>
+            <Route index element={<HomeIndex />} />
+            <Route path="welcome" element={<HomeWelcome />}></Route>
+          </Route>
+          <Route path="/about" element={<AboutPage />}>
+            <Route index element={<RememberSubtabRedirect tab="about" />} />
+            <Route path="overview" element={<AboutOverview />}></Route>
+            <Route path="changelog" element={<AboutChangelog />}></Route>
+            <Route path="license" element={<AboutLicense />}></Route>
+            <Route path="attributions" element={<AboutAttributions />}></Route>
+          </Route>
+          <Route
+            path="/inventory"
+            element={
+              <RequireSave>
+                <InventoryRoot />
+              </RequireSave>
+            }
+          >
+            <Route index element={<RememberSubtabRedirect tab="inventory" />} />
+            <Route
+              path="consumables"
+              element={<InventoryConsumables />}
+            ></Route>
+            <Route path="key-items" element={<InventoryKeyItems />}></Route>
+            <Route path="weapons" element={<InventoryWeapons />}></Route>
+            <Route path="armors" element={<InventoryArmors />}></Route>
+          </Route>
+          <Route
+            path="/party"
+            element={
+              <RequireSave>
+                <PartyRoot />
+              </RequireSave>
+            }
+          >
+            <Route index element={<RememberSubtabRedirect tab="party" />} />
+            <Route path="overview" element={<PartyOverview />}></Route>
+            <Route path="kris" element={<PartyKris />}></Route>
+            <Route path="susie" element={<PartySusie />}></Route>
+            <Route path="ralsei" element={<PartyRalsei />}></Route>
+            <Route
+              path="noelle"
+              element={
+                <RequireChapter requiredChapter={2}>
+                  <PartyNoelle />
+                </RequireChapter>
+              }
+            ></Route>
+          </Route>
+          <Route
+            path="/recruits"
+            element={
+              <RequireSave>
+                <RequireChapter requiredChapter={2}>
+                  <RecruitsRoot />
+                </RequireChapter>
+              </RequireSave>
+            }
+          ></Route>
+          <Route
+            path="/light-world"
+            element={
+              <RequireSave>
+                <LightWorldRoot />
+              </RequireSave>
+            }
+          ></Route>
+          <Route
+            path="/story"
+            element={
+              <RequireSave>
+                <StoryRoot />
+              </RequireSave>
+            }
+          >
+            <Route index element={<RememberSubtabRedirect tab="story" />} />
+            <Route
+              path="chapter1"
+              element={
+                <RequireChapter requiredChapter={1}>
+                  <StoryChapter1 />
+                </RequireChapter>
+              }
+            ></Route>
+            <Route
+              path="chapter2"
+              element={
+                <RequireChapter requiredChapter={2}>
+                  <StoryChapter2 />
+                </RequireChapter>
+              }
+            ></Route>
+            <Route
+              path="chapter3"
+              element={
+                <RequireChapter requiredChapter={3}>
+                  <StoryChapter3 />
+                </RequireChapter>
+              }
+            ></Route>
+            <Route
+              path="chapter4"
+              element={
+                <RequireChapter requiredChapter={4}>
+                  <StoryChapter4 />
+                </RequireChapter>
+              }
+            ></Route>
+            <Route
+              path="chapter5"
+              element={
+                <RequireChapter requiredChapter={5}>
+                  <StoryChapter5 />
+                </RequireChapter>
+              }
+            ></Route>
+          </Route>
+          <Route
+            path="/flags"
+            element={
+              <RequireSave>
+                <FlagsRoot />
+              </RequireSave>
+            }
+          ></Route>
+          {import.meta.env.VITE_DEVTOOLS_TAB === 'true' &&
+            DevtoolsRoot &&
+            DevtoolsColors && (
+              <Route
+                path="/devtools"
+                element={
+                  <RequireDevmode>
+                    <DevtoolsRoot />
+                  </RequireDevmode>
+                }
+              >
+                <Route
+                  index
+                  element={<RememberSubtabRedirect tab="devtools" />}
+                />
+                <Route path="colors" element={<DevtoolsColors />} />
+              </Route>
+            )}
+          <Route
+            path="/share"
+            element={
+              <Navigate
+                to={{
+                  pathname:
+                    getLastSubtab('home') === 'welcome' ? '/welcome' : '/',
+                  hash: '',
+                }}
+                replace
+              />
+            }
+          ></Route>
+          <Route path="/settings" element={<SettingsRoot />}></Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </AnimatePresence>
+  );
+}

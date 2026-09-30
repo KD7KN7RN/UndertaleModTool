@@ -1,0 +1,43 @@
+name: Deploy to Cloudflare Pages (Preview)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    env:
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_PROJECT: tenna
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUILD_DIR: dist
+      PREVIEW_BRANCH: preview
+      BRANCH: preview
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+        env:
+          VITE_DEPLOY_TARGET: preview
+
+      - name: deploy with wrangler
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ env.CF_API_TOKEN }}
+          accountId: ${{ env.CF_ACCOUNT_ID }}
+          command: >
+            pages deploy ${{ env.BUILD_DIR }}
+            --project-name=${{ env.CF_PROJECT }}
+            --branch=${{ env.PREVIEW_BRANCH }}

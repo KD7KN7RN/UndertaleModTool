@@ -1,0 +1,322 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.14.0] - 2026-08-24
+
+This release adds save sharing through links and QR codes, unique visual save fingerprints, and more Chapter 5 flags.
+
+### Added
+
+- Added save sharing. ([PR #167](https://github.com/tennaproject/tenna-editor/pull/167))
+- Added unique visual fingerprints for each save, shown on the Overview tab and in the share dialog.
+- Added remaining Chapter 5 flags, including garden watering, castle collectibles, platforming rooms, and related bitfields. Thanks [Frisktaker](https://github.com/Frisktaker) for reporting! ([Issue #155](https://github.com/tennaproject/tenna-editor/issues/155), [PR #163](https://github.com/tennaproject/tenna-editor/pull/163))
+
+### Fixed
+
+- Fixed a save parser quirk that added trailing spaces to weapon style on every save/load cycle.
+- Corrected the BetterHeal flag description for current game versions. Fighting the Sound of Justice no longer upgrades the spell. Thanks [nmotsch789](https://github.com/nmotsch789) for reporting! ([Issue #156](https://github.com/tennaproject/tenna-editor/issues/156))
+- Corrected the reversed Spamton NEO chest reward description. A Violenced outcome now correctly notes that the chest gives PuppetScarf instead of DealMaker.
+
+## [0.13.0] - 2026-08-13
+
+This release significantly changes the UI. Equipment stats and item information are now visible when editing them, and the party tabs display more information. Chapter 5 flag coverage has been expanded. Many bugs were fixed.
+
+### Added
+
+- Added equipment stats throughout the editor. Weapons and armor now have stat metadata with icons and abilities. Attack, defense, and magic recalculate automatically when you change a loadout. The stats appear in the inventory dropdown, the party menus, and the Overview tab. There is also a button for resetting stats to their defaults. Thanks [Araraura](https://github.com/Araraura) for the substantial contribution!
+- Added tooltips for consumables, spells, key items, light world items, and equipment, along with details for the currently selected entry. Thanks [Araraura](https://github.com/Araraura)!
+- Added copyable links for editor sections. Hold Ctrl to reveal link targets and copy controls. Opening a link will scroll to and highlight the requested section. This feature existed before, but it has been significantly improved and made easier to use.
+- Added the flag number to help popups, which gives more context about specific entries in Story tab. Thanks [Araraura](https://github.com/Araraura)! ([PR #114](https://github.com/tennaproject/tenna-editor/pull/114))
+- Expanded the Story editor with more Chapter 5 and Chapter 1 flags. Thanks [Xanderrock98](https://github.com/Xanderrock98) and [Frisktaker](https://github.com/Frisktaker) for the continued Chapter 5 research, and to everyone who requested missing flags! ([Issue #124](https://github.com/tennaproject/tenna-editor/issues/124))
+
+### Changed
+
+- Updated the Chapter 5 storage size. Thanks [JKBSunshine](https://github.com/JKBSunshine) for reporting! ([Issue #126](https://github.com/tennaproject/tenna-editor/issues/126))
+- Expanded and corrected the Korean and Italian translations. Thanks [newhajinyoon](https://github.com/newhajinyoon) and [lori2012real](https://github.com/lori2012real)!
+
+### Fixed
+
+- Fixed several problems on mobile devices, including party stats failing to open, save switching, and selector behaviour. Thanks [luizeduardom096](https://github.com/luizeduardom096), [baskinelijah51-code](https://github.com/baskinelijah51-code), and [ElijahVallette](https://github.com/ElijahVallette) for reporting! ([Issue #119](https://github.com/tennaproject/tenna-editor/issues/119), [Issue #125](https://github.com/tennaproject/tenna-editor/issues/125), [Issue #116](https://github.com/tennaproject/tenna-editor/issues/116))
+- Fixed the Chapter 5 plot point selector. Thanks [MacroTutku](https://github.com/MacroTutku) for reporting! ([Issue #123](https://github.com/tennaproject/tenna-editor/issues/123))
+- Fixed saves that failed to load, including Demo saves showing an invalid room ID and saves storing "Normal" values. Thanks [lori2012real](https://github.com/lori2012real) for reporting! ([Issue #131](https://github.com/tennaproject/tenna-editor/issues/131))
+- Corrected flag labels, equipment availability, and typos across the editor, including the Spamton NEO encounter values. Thanks [nmotsch789](https://github.com/nmotsch789) and [pacmastermeow](https://github.com/pacmastermeow) for reporting! ([Issue #133](https://github.com/tennaproject/tenna-editor/issues/133), [Issue #136](https://github.com/tennaproject/tenna-editor/issues/136), [Issue #137](https://github.com/tennaproject/tenna-editor/issues/137), [Issue #138](https://github.com/tennaproject/tenna-editor/issues/138))
+
+## [0.12.0] - 2026-07-18
+
+**Sorry to keep you waiting!** This is one of the biggest Tenna Editor updates so far, with major improvements across Chapter 5 editing, save management, and localization.
+
+### Chapter 5
+
+Chapter 5 support has grown significantly. The Story tab now covers most useful progression points, interactions, minigames, collectibles, and side content, with hundreds of flags organized into sections that are easier to browse. Named plot points, character titles, and Chapter 5-specific equipment behavior make the rest of the editor more complete and accurate as well.
+
+### Save import and export
+
+This release introduces an entirely new, experimental import and export workflow. Tenna Editor can now work with Nintendo Switch `deltarune.sav` containers, import several PC saves from individual files, folders, or ZIP archives, let you review them before they are added, and export multiple saves together. `dr.ini` metadata can be preserved or generated automatically for both PC and Switch exports.
+
+This should make moving and converting larger collections of saves much less tedious. Because these features handle many different file and archive layouts, please report anything that does not import or export as expected.
+
+### Languages
+
+This release also introduces a new localization system. Interface text and editor data including items, rooms, flags, descriptions, and character information can now be translated, while any missing or newly added text safely falls back to English. Korean and Italian are the first substantial community translations, and both already cover most of the editor. Together, they give us a strong foundation that can be expanded and improved as the project grows.
+
+### Thank you
+
+A huge thank you to [Xanderrock98](https://github.com/Xanderrock98) for the massive expansion of Chapter 5 flags and Story sections, [newhajinyoon](https://github.com/newhajinyoon) and [lori2012real](https://github.com/lori2012real) for the extensive Korean and Italian translation work, and [Araraura](https://github.com/Araraura) for improving the Flags page. Their work helped turn this into one of the largest and most complete Tenna Editor releases so far.
+
+A special thank you to <span class="text-red">maxdefolsch</span> and [mc-intosh](https://github.com/McMistrzYT) for researching, identifying, and documenting flags. Their work - especially maxdefolsch's extensive research was essential to improving the accuracy and coverage of the editor's flag data.
+
+Thank you as well to everyone who tested the editor and reported bugs, incorrect data, compatibility problems, and other issues.
+
+### Added
+
+- Added Nintendo Switch `deltarune.sav` import and export, including automatic `dr.ini` generation.
+- Added multi-save workflows: import individual PC saves, folders, ZIP archives, or multi-entry Switch containers; review saves before importing; and export selected saves as a PC ZIP or Switch container. ([Issue #103](https://github.com/tennaproject/tenna-editor/issues/103))
+- Added interface localization, a language selector, and substantial Korean and Italian community translations. Missing translations fall back to English. Thanks [newhajinyoon](https://github.com/newhajinyoon) and [lori2012real](https://github.com/lori2012real)! ([PR #88](https://github.com/tennaproject/tenna-editor/pull/88), [PR #91](https://github.com/tennaproject/tenna-editor/pull/91), [PR #107](https://github.com/tennaproject/tenna-editor/pull/107))
+- Added an advanced option to enter plot point values manually instead of choosing from the known list.
+- Added Light World money editing. Thanks [RainKotobic](https://github.com/RainKotobic) for reporting! ([Issue #100](https://github.com/tennaproject/tenna-editor/issues/100))
+- Added named Chapter 5 plot points and Chapter 5-specific character titles and equipment behavior, including Susie's ribbon unlock.
+- Expanded the Story editor with hundreds of additional categorized flags, primarily for Chapter 5. Thanks [Xanderrock98](https://github.com/Xanderrock98) for the substantial contribution! ([PR #97](https://github.com/tennaproject/tenna-editor/pull/97))
+
+### Changed
+
+- Chapter 5 is no longer marked as experimental.
+- The Flags page now lists flag IDs in ascending order. Thanks [Araraura](https://github.com/Araraura)! ([PR #93](https://github.com/tennaproject/tenna-editor/pull/93))
+
+### Fixed
+
+- Fixed downloads sometimes failing in browsers that start them asynchronously. Thanks [attn10010110-hue](https://github.com/attn10010110-hue), [robinsonvallan-cloud](https://github.com/robinsonvallan-cloud), and [SebEatsCookies](https://github.com/SebEatsCookies) for reporting! ([Issue #85](https://github.com/tennaproject/tenna-editor/issues/85), [Issue #72](https://github.com/tennaproject/tenna-editor/issues/72), [Issue #63](https://github.com/tennaproject/tenna-editor/issues/63))
+- Fixed dropdown positioning and scrolling on mobile devices. Thanks [cursedsome](https://github.com/cursedsome) for reporting! ([Issue #99](https://github.com/tennaproject/tenna-editor/issues/99))
+- Corrected Chapter 5 equipment availability for party members. Thanks [LandofHeros2234](https://github.com/LandofHeros2234) for reporting! ([Issue #84](https://github.com/tennaproject/tenna-editor/issues/84))
+
+## [0.11.0-beta] - 2026-06-29
+
+Critical bug fixes and some minor flag additions. More to come soon!
+
+### Added
+
+- Added a manual flag editor on the Flags page for editing flags by id, including direct value and bitfield value modes, a selector for known bitfields, and an unlisted flag notice when a flag id is not in the catalog.
+- Added a "Show dogchecked rooms" toggle on the Overview page. Dogchecked rooms are hidden from the room picker by default.
+- Added an environment badge in the header for Dev and Preview builds, with build environment details on the About page.
+- Added Chapter 5 story flags including Pink progress, voice clips, Toriel interactions and platforming counters.
+
+### Changed
+
+- Reworked the Flags page list into a table layout with Id, Flag, Description, and Value columns.
+- Moved flag list pagination to the bottom of the table; search and per-page controls stay with the list.
+- Updated the Chapter 5 label from "Experimental" to "Festival Day" in the upload dialog.
+- Centralized button pointer and disabled cursors in base CSS for consistent behavior across the UI.
+
+### Fixed
+
+- Fixed room display names, save-point flags, and dogcheck metadata for Chapters 1–5 to match in-game values.
+- Hardened save file parsing to handle variable line counts and trailing blank lines, deriving the flag count from the file instead of a fixed value. Thanks [Mrcreper123566](https://github.com/Mrcreper123566) for reporting! ([Issue #70](https://github.com/tennaproject/tenna-editor/issues/70))
+- Fixed Chapter 1 saves prompting for a chapter that was missing from the selector. Chapter 1 saves skip the chapter selection step since the format is exclusive to Chapter 1. Thanks [HTI-VS3](https://github.com/HTI-VS3) for reporting! ([Issue #60](https://github.com/tennaproject/tenna-editor/issues/60))
+- Fixed Select inputs showing a blue selection highlight when clicked, matching selection colors to the field background instead.
+
+## [0.10.1-beta] - 2026-06-25
+
+This minor update adds highly requested ability to modify amount of Pink Coins and Flowery Dollars in Chapter 5 saves.
+
+### Added
+
+- Added Pink Coins and Flowery Dollars to the Overview tab.
+
+### Fixed
+
+- Fixed missing rhythm minigames flags in the Story tab. Thanks [Ranoru24](https://github.com/Ranoru24) for reporting! ([Issue #67](https://github.com/tennaproject/tenna-editor/issues/67))
+
+## [0.10.0-beta] - 2026-06-24
+
+This is the first basic Chapter 5 content update. Chapter-specific progression flags are not included yet and will require more time to research and add.
+
+### Added
+
+- Added basic Chapter 5 support including recruits, rooms, weapons, armors, and items.
+
+### Changed
+
+- Displayed undo/redo buttons in the Header even when no save file is loaded.
+- Hidden the editor subheading in the Header for less visual clutter.
+
+### Fixed
+
+- Fixed an issue where the "Have you answered honestly?" and "pain and seizure" vessel flags were saved in reverse/inverted. Thanks [
+  Pizzaboy610](https://github.com/Pizzaboy610) for reporting! ([Issue #59](https://github.com/tennaproject/tenna-editor/issues/59))
+
+## [0.9.0-beta] - 2026-06-22
+
+This is the final feature release before Chapter 5. The Story tabs are now much more usable, accurate, and complete. I apologize for the previous low-quality and often misleading flag descriptions. The basic Chapter 5 data will most likely be added within a few hours of its release.
+
+### Changed
+
+- The flags metadata has been massively refactored to be more accurate and consistent. Thanks [Jacky720](https://github.com/Jacky720) and the contributors of [Flowey's Time Machine fork](https://github.com/Jacky720/FloweysTimeMachine) for providing high-quality source of metadata!
+- Refactored Story tabs data to utilize the new flags metadata.
+- Updated the Linux save path in the Welcome page. It now points to correct directory, instead of the one for demo version. Thanks [LenNerd42](https://github.com/LenNerd42) for reporting! ([Issue #56](https://github.com/tennaproject/tenna-editor/issues/56))
+
+## [0.8.1-beta] - 2026-06-21
+
+### Added
+
+- Added support for Chapter 4 rhythm game score flags and a dedicated "Rhythm Games" section in the Story tab. Thanks [Ranoru24](https://github.com/Ranoru24) for reporting! ([Issue #55](https://github.com/tennaproject/tenna-editor/issues/55))
+
+### Changed
+
+- Refactored rhythm game flags, updating their names and descriptions for clarity.
+- Updated the contributors generation script to dynamically render and sync the contributor list in `README.md`.
+
+### Fixed
+
+- Fixed the Story tab search logic to correctly filter story sections and flag clusters based on the search query. Thanks [Ranoru24](https://github.com/Ranoru24) for reporting! ([Issue #55](https://github.com/tennaproject/tenna-editor/issues/55))
+- Fix a mistake in the description for Chapter 4's "Blood stain" flag. Author: [Wryyyong](https://github.com/Wryyyong) ([PR #51](https://github.com/tennaproject/tenna-editor/pull/51)).
+
+## [0.8.0-beta] - 2026-06-20
+
+### Added
+
+- Added experimental Chapter 5 save detection and navigation. Dedicated Chapter 5 data is not mapped yet, so the editor still uses known Chapter 1-4 data where applicable.
+- Added undo and redo for save edits.
+- Added a change summary to the download dialog, comparing the current save with the last uploaded or downloaded version.
+- Added search to Story chapter pages.
+- Added party portraits to the party overview and character pages.
+
+### Changed
+
+- Reworked several common UI components and dialogs.
+- Reorganized Story tabs into smaller sections and clusters.
+- Updated Story flag metadata for older chapters. This is still beta-quality and may need corrections based on community feedback.
+- Improved filtering and option generation for editor fields.
+- Updated dependencies and deploy configuration.
+
+### Fixed
+
+- Corrected the Ralsei room visit Story flag mapping. Author: [MiaouKING](https://github.com/MiaouKING) ([PR #33](https://github.com/tennaproject/tenna-editor/pull/33)).
+- Windows save path handling now uses a path variable for better portability. Author: [soulware1](https://github.com/soulware1).
+- Dropdowns now render `Empty` in grey. Author: [Araraura](https://github.com/Araraura).
+- Added missing White Ribbon armor to Ralsei. Thanks [Anonymously599](https://github.com/Anonymously599) for reporting! ([Issue #36](https://github.com/tennaproject/tenna-editor/issues/36))
+- Added missing Glass Light World item to Chapter 1. Thanks [Anonymously599](https://github.com/Anonymously599) for reporting! ([Issue #36](https://github.com/tennaproject/tenna-editor/issues/36))
+
+## [0.7.11-beta] - 2026-05-23
+
+### Added
+
+- Added flags per page control to the Flags editor. Author: [Araraura](https://github.com/Araraura) ([PR #26](https://github.com/tennaproject/tenna-editor/pull/26))
+
+### Fixed
+
+- Improved accessibility across form controls and dialogs.
+- Added additional mitigations against LastPass autofill issues.
+- Corrected the King Defeated flag. Author: [afreetoplaynoob](https://github.com/afreetoplaynoob) ([PR #22](https://github.com/tennaproject/tenna-editor/pull/22))
+
+## [0.7.10-beta] - 2026-02-02
+
+### Added
+
+- Added new Flags editing page for advanced users. This allows direct editing of individual flags in the save file.
+
+### Fixed
+
+- Empty armor doesn't show as "Invalid" on Kris anymore. Author: [boopboy](https://github.com/afreetoplaynoob) ([PR #20](https://github.com/tennaproject/tenna-editor/pull/20))
+
+## [0.7.9-beta] - 2026-01-15
+
+### Fixed
+
+- Link to Flowey's Time Machine in About tab is now correct. Author: [Matojeje](https://github.com/Matojeje) ([PR #18](https://github.com/tennaproject/tenna-editor/pull/18))
+- Linux path for save files is now correct. Paths now can be copied easily. Author: [KrisGra](https://github.com/krisgrant) ([PR #19](https://github.com/tennaproject/tenna-editor/pull/19))
+
+## [0.7.8-beta] - 2026-01-03
+
+### Fixed
+
+- Fixed 'nan' value handling for weapon style in legacy demo save files. Thanks [Zakarith](https://github.com/Zakarith) for reporting! ([Issue #16](https://github.com/tennaproject/tenna-editor/issues/16))
+- Fixed serialization of number fields, now they correctly use scientific notation when needed. Thanks [Zakarith](https://github.com/Zakarith) for reporting! ([Issue #15](https://github.com/tennaproject/tenna-editor/issues/15))
+- Added missing Vessel legs variant. Thanks [Zakarith](https://github.com/Zakarith) for reporting! ([Issue #15](https://github.com/tennaproject/tenna-editor/issues/15))
+
+## [0.7.7-beta] - 2025-12-31
+
+### Fixed
+
+- Save parser now handles save files with unexpected trailing newlines or null values. Thanks [Zakarith](https://github.com/Zakarith) and many more from Steam Tutorial Page for reporting! ([Issue #14](https://github.com/tennaproject/tenna-editor/issues/14))
+- Save parsing errors now display detailed error messages to help identify the issue.
+
+## [0.7.6-beta] - 2025-11-29
+
+### Fixed
+
+- Fixed vessel color option "Yellow" to correctly display "Cyan". Thanks [titen96](https://github.com/titen96) for reporting! ([Issue #12](https://github.com/tennaproject/tenna-editor/issues/12))
+- Fixed "Berdly's Arm Broken" flag to correctly display the value. Thanks [ǝɹǝɥǝǝsoʇƃuᴉɥʇou](https://steamcommunity.com/profiles/76561199786538394) for reporting!
+
+## [0.7.5-beta] - 2025-10-15
+
+### Fixed
+
+- Vessel (Goner) values are now correctly applied. Thanks [sam gaming](https://steamcommunity.com/id/samgaming2008) and [Dawn](https://steamcommunity.com/id/BreezeOfDawn) for reporting!
+
+## [0.7.4-beta] - 2025-10-02
+
+### Added
+
+- Now by default only rooms with save point are shown as options. There is a toggle to show all rooms.
+
+### Changed
+
+- Stats limit was increased from 999 to 9999.
+
+### Fixed
+
+- Chapter 4 save files are now correctly handled. Thanks [XtronXI](https://github.com/XtronXI) for reporting! ([Issue #11](https://github.com/tennaproject/tenna-editor/issues/11))
+
+## [0.7.3-beta] - 2025-09-21
+
+### Fixed
+
+- Chapter selector is now working correctly. Thanks [XtronXI](https://github.com/XtronXI) for reporting! ([Issue #6](https://github.com/tennaproject/tenna-editor/issues/6))
+- Saves do not re-add themselves after being deleted anymore. Thanks [XtronXI](https://github.com/XtronXI) for reporting! ([Issue #6](https://github.com/tennaproject/tenna-editor/issues/6))
+
+## [0.7.2-beta] - 2025-09-21
+
+### Added
+
+- Reduced motion setting is now respected across the app.
+- Missing rooms in Chapter 4 were added.
+
+## [0.7.1-beta] - 2025-09-19
+
+### Added
+
+- Better support for search engines for SEO purposes.
+
+### Fixed
+
+- When route in URL is invalid, it now redirects to the Home page instead of showing a blank page.
+- Removed unnecessary assets being included in the build.
+
+## [0.7.0-beta] - 2025-09-18
+
+### Added
+
+- Changelog page was added to the About tab.
+- Demo save files are now considered supported.
+- New version notification was added.
+- Added 10 new flags to Chapter 4.
+
+### Changed
+
+- Internal save structure was refactored to be more maintainable and reliable.
+- Many components were refactored to simplify the code.
+- Codebase was cleaned up, and some dead code was removed.
+- Toast component was improved with better styling and formatting.
+- "Gave Tenna away" flag was incorrect and was replaced with "Talked with Mettaton about Tenna" flag which is the correct one.
+
+### Fixed
+
+- Home icon on sidebar is now highlighted while being on the Welcome page.
+- Changing from the Overview to the Welcome page is no longer causing reload of the whole content.
+- There are no 3 "Talked to Burgerpants" labeled flags in Chapter 1 anymore. Thanks [XtronXI](https://github.com/XtronXI) and [ticktockdoomapproaches](https://steamcommunity.com/profiles/76561199782178857) for reporting! ([Issue #6](https://github.com/tennaproject/tenna-editor/issues/6))
+- Replaced duplicate "Carnival Gift Recipient" flag with "Weirdroute Progress" flag in Chapter 2. Thanks [XtronXI](https://github.com/XtronXI) for reporting! ([Issue #6](https://github.com/tennaproject/tenna-editor/issues/6))

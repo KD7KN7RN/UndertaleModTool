@@ -1,0 +1,39 @@
+import { Checkbox, FieldWrapper } from '@components';
+import { useSave } from '@store';
+import { useTranslation } from '../../i18n';
+
+interface InDarkWorldFieldProps {
+  id?: string;
+  className?: string;
+}
+
+export function InDarkWorldField({ id, className }: InDarkWorldFieldProps) {
+  const { t } = useTranslation();
+  const checked = useSave((s) => s.save?.inDarkWorld) ?? false;
+  const setField = useSave((s) => s.setSaveField);
+
+  function onChange(state: boolean) {
+    setField('inDarkWorld', state);
+  }
+
+  const description = `
+  This internal flag is set to "true" when you are in the Dark World.
+
+  For example, it changes how menus are rendered.
+  `;
+  return (
+    <FieldWrapper
+      id={id}
+      className={className}
+      title={t('ui.field.inDarkWorld', 'Currently in Dark World')}
+      description={description}
+      inline
+    >
+      <Checkbox
+        label={t('ui.field.inDarkWorld', 'Currently in Dark World')}
+        checked={checked}
+        onChange={onChange}
+      />
+    </FieldWrapper>
+  );
+}

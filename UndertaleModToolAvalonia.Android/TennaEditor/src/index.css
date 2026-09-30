@@ -1,0 +1,602 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-tenna: oklch(24.169% 0.02276 288.39);
+  --color-tenna-50: oklch(46.914% 0.05537 297.73);
+  --color-tenna-100: oklch(45.65% 0.0524 297.19);
+  --color-tenna-200: oklch(43.144% 0.04797 295.39);
+  --color-tenna-300: oklch(40.524% 0.04707 295.7);
+  --color-tenna-400: oklch(37.94% 0.04254 293.44);
+  --color-tenna-500: oklch(35.414% 0.03805 292.68);
+  --color-tenna-600: oklch(32.502% 0.03528 291.18);
+  --color-tenna-700: oklch(29.873% 0.0306 289.8);
+  --color-tenna-800: oklch(26.931% 0.02772 290.52);
+  --color-tenna-900: oklch(24.169% 0.02276 288.39);
+  --color-tenna-950: oklch(22.84% 0.02116 288.77);
+
+  --color-surface-1: var(--color-tenna-900); /* main content / panels */
+  --color-surface-2: var(--color-tenna-800); /* containers */
+  --color-surface-3: var(--color-tenna-700); /* raised containers */
+  --color-surface-4: var(--color-tenna-600); /* highest neutral layer */
+
+  --surface-hover-mix: 50%;
+  --surface-active-mix: 30%;
+
+  --color-surface-1-hover: color-mix(
+    in oklch,
+    var(--color-tenna-900) var(--surface-hover-mix),
+    var(--color-tenna-800)
+  );
+  --color-surface-1-active: color-mix(
+    in oklch,
+    var(--color-tenna-900) var(--surface-active-mix),
+    var(--color-tenna-700)
+  ); /* jump two steps */
+  --color-surface-2-hover: color-mix(
+    in oklch,
+    var(--color-tenna-800) var(--surface-hover-mix),
+    var(--color-tenna-700)
+  );
+  --color-surface-2-active: color-mix(
+    in oklch,
+    var(--color-tenna-800) var(--surface-active-mix),
+    var(--color-tenna-600)
+  );
+  --color-surface-3-hover: color-mix(
+    in oklch,
+    var(--color-tenna-700) var(--surface-hover-mix),
+    var(--color-tenna-600)
+  );
+  --color-surface-3-active: color-mix(
+    in oklch,
+    var(--color-tenna-700) var(--surface-active-mix),
+    var(--color-tenna-500)
+  );
+  --color-surface-4-hover: color-mix(
+    in oklch,
+    var(--color-tenna-600) var(--surface-hover-mix),
+    var(--color-tenna-500)
+  );
+  --color-surface-4-active: color-mix(
+    in oklch,
+    var(--color-tenna-600) var(--surface-active-mix),
+    var(--color-tenna-400)
+  );
+
+  --color-border: color-mix(
+    in oklch,
+    var(--color-tenna-700) 65%,
+    var(--color-tenna-600)
+  );
+  --color-divider: color-mix(
+    in oklch,
+    var(--color-tenna-700) 65%,
+    var(--color-tenna-500)
+  );
+  --color-overlay: oklch(0% 0 0 / 0.5);
+
+  --color-text-1: oklch(95% 0 0); /* primary */
+  --color-text-2: oklch(75% 0.004 260); /* secondary */
+  --color-text-3: oklch(52% 0.004 260); /* muted/disabled */
+
+  --color-red: #e53170; /* tenna */
+  --color-red-hover: #e7437d;
+  --color-red-active: #e31f63;
+  --color-red-soft: #e6337129; /* 16% alpha */
+
+  --color-blue: #00a2e8; /* kris */
+  --color-blue-hover: #00b0fc;
+  --color-blue-active: #0094d4;
+  --color-blue-soft: #00a2e829; /* 16% alpha */
+
+  --color-pink: #ea79c8; /* susie */
+  --color-pink-hover: #ed8bcf;
+  --color-pink-active: #e767c1;
+  --color-pink-soft: #ea7bc929; /* 16% alpha */
+
+  --color-green: #b5e61d; /* ralsei */
+  --color-green-hover: #bbe82f;
+  --color-green-active: #a8d718;
+  --color-green-soft: #b4e61e29; /* 16% alpha */
+
+  --color-yellow: #ffff00; /* noelle */
+  --color-yellow-hover: #ffff14;
+  --color-yellow-active: #ebeb00;
+  --color-yellow-soft: #ffff0024; /* 14% alpha */
+
+  --color-purple: #af67af; /* susie lightworld */
+  --color-purple-hover: #b674b6;
+  --color-purple-active: #a85aa8;
+  --color-purple-soft: #af67af29; /* 16% alpha */
+
+  --color-frost: #9fe0fb; /* snowgrave */
+  --color-frost-hover: #b0e6fc;
+  --color-frost-active: #8ad8fa;
+  --color-frost-soft: #9fe0fb29; /* 16% alpha */
+
+  --color-accent: var(--color-red);
+  --color-accent-hover: var(--color-red-hover);
+  --color-accent-active: var(--color-red-active);
+  --color-on-accent: var(--color-text-1);
+
+  --color-danger: var(--color-red);
+  --color-danger-hover: var(--color-red-hover);
+  --color-success: var(--color-green);
+  --color-focus: var(--color-text-3);
+  --radius-ui: 0;
+
+  --font-sans: 'Pixel Operator', sans-serif;
+  --font-mono: 'Pixel Operator Mono', monospace;
+  --font-mono-8: 'Pixel Operator Mono 8', monospace;
+  --font-scale: 1.09;
+
+  /* cursed but better than the old scaling */
+  --text-xs: 14.96px;
+  --text-sm: 16px;
+  --text-base: 18.06px;
+  --text-lg: 21.39px;
+  --text-xl: 23.76px;
+  --text-2xl: 29.94px;
+  --text-3xl: 33.86px;
+  --text-4xl: 42.77px;
+  --text-5xl: 57.03px;
+  --text-6xl: 71.29px;
+  --text-7xl: 80px;
+  --text-8xl: 112px;
+  --text-9xl: 160px;
+}
+
+/* Weird Route saves: phase 1-2 recolor the logo, phase 3+ the whole accent */
+:root[data-side-b] .tenna-logo path {
+  fill: var(--color-frost);
+}
+
+:root[data-side-b='full'] {
+  --color-accent: var(--color-frost);
+  --color-accent-hover: var(--color-frost-hover);
+  --color-accent-active: var(--color-frost-active);
+  --color-on-accent: var(--color-tenna-950);
+}
+
+:root[data-locale='ko'] {
+  --font-sans: 'Pixel Operator', 'Galmuri11', sans-serif;
+  --font-mono: 'Pixel Operator Mono', 'Galmuri Mono 11', monospace;
+  --font-mono-8: 'Pixel Operator Mono 8', 'Galmuri Mono 11', monospace;
+}
+
+@font-face {
+  font-family: 'Pixel Operator';
+  src: url('/fonts/PixelOperator.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixel Operator';
+  src: url('/fonts/PixelOperator-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixel Operator Mono';
+  src: url('/fonts/PixelOperatorMono.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixel Operator Mono';
+  src: url('/fonts/PixelOperatorMono-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixel Operator Mono 8';
+  src: url('/fonts/PixelOperatorMono8.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixel Operator Mono 8';
+  src: url('/fonts/PixelOperatorMono8-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/ko/Galmuri11.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/ko/Galmuri11-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri Mono 11';
+  src: url('/fonts/ko/GalmuriMono11.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    color: var(--color-text-1);
+    background-color: var(--color-surface-1);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scrollbar-gutter: stable;
+  }
+
+  /* this is still baseline for spacing */
+  html {
+    font-size: calc(1rem * var(--font-scale));
+  }
+
+  body,
+  #root {
+    font-size: var(--text-base);
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed;
+  }
+}
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-tenna-600) var(--color-tenna-800);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-tenna-800);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-tenna-600);
+    border: 2px solid var(--color-tenna-800);
+    transition: background-color 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-tenna-500);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--color-tenna-400);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--color-tenna-800);
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type='search']::-webkit-search-decoration,
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-results-button,
+  input[type='search']::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    border-width: 1px;
+  }
+
+  .scrollbar-auto {
+    scrollbar-width: auto;
+  }
+
+  .scrollbar-auto::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-auto::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--color-tenna-600) 70%, transparent);
+    border: none;
+  }
+
+  .scrollbar-auto::-webkit-scrollbar-thumb:hover {
+    background: var(--color-tenna-600);
+  }
+
+  em {
+    @apply tracking-widest;
+  }
+
+  b {
+    @apply font-bold;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Galmuri (Korean pixel font) glyphs need more vertical room than the
+     Latin pixel font's line-height:1 allows, or their tops/bottoms clip. */
+  :root[data-locale='ko'] .leading-none {
+    line-height: 1.3;
+  }
+}
+
+@utility ui-mono-xs {
+  font-family: var(--font-mono-8);
+  font-size: 8px;
+  line-height: 12px;
+}
+
+@utility ui-mono-sm {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@utility ui-mono-base {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@utility ui-mono-xl {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@layer components {
+  .page {
+    @apply flex flex-col mx-auto p-6 pb-12 w-full flex-none min-w-0 gap-4 max-w-7xl;
+  }
+
+  .ui-focus-ring {
+    @apply outline-none focus:outline-none focus:ring-1 focus:ring-text-3 motion-reduce:transition-none transition-colors;
+  }
+
+  .ui-field {
+    @apply w-full h-10 px-3 py-2 leading-none bg-surface-3 border border-border text-text-1 motion-reduce:transition-none transition-colors;
+  }
+
+  .ui-field:disabled {
+    @apply bg-surface-2 text-text-2 opacity-40 cursor-not-allowed select-none;
+  }
+
+  .ui-field:not(:disabled):focus {
+    @apply outline-none ring-1 ring-text-3;
+  }
+
+  .ui-field-mono {
+    @apply font-mono text-sm text-text-1 px-2.5 py-1.5 bg-surface-2 border border-border leading-none min-w-0;
+  }
+
+  .ui-panel {
+    @apply border border-border bg-surface-2;
+  }
+
+  .ui-panel-muted {
+    @apply border border-border bg-surface-3/50 px-3 py-3 text-sm text-text-2;
+  }
+
+  .ui-section-label {
+    @apply text-xs font-semibold uppercase tracking-wide text-text-2;
+  }
+
+  .ui-icon-btn {
+    @apply p-1.5 sm:p-2 bg-surface-3 hover:bg-surface-3-hover motion-reduce:transition-none transition-colors outline-none focus:outline-none focus:ring-1 focus:ring-text-3;
+  }
+
+  .ui-danger {
+    @apply text-danger;
+  }
+
+  .ui-prose-muted {
+    @apply text-sm text-text-2 leading-relaxed;
+  }
+
+  .ui-divider-row {
+    @apply border-b border-divider last:border-b-0;
+  }
+
+  .section-link-target {
+    @apply relative scroll-m-4;
+  }
+
+  .section-link-control {
+    @apply invisible absolute top-1 right-1 z-20 inline-flex h-7 w-fit max-w-[45%] translate-y-1 items-center gap-1.5 border border-blue/40 bg-surface-4 px-2 ui-mono-xs text-blue opacity-0 shadow-md shadow-surface-1/70 pointer-events-none outline-none transition-[opacity,transform,background-color,border-color,color] duration-100 motion-reduce:transition-none focus-visible:ring-1 focus-visible:ring-text-1;
+  }
+
+  .section-link-control:hover {
+    @apply border-blue/70 bg-surface-3 text-blue-hover;
+  }
+
+  [data-section-links-visible] .section-link-target {
+    outline: 1px dashed color-mix(in oklch, var(--color-blue) 35%, transparent);
+    outline-offset: 2px;
+  }
+
+  [data-section-links-visible] .section-link-control {
+    @apply visible translate-y-0 opacity-100 pointer-events-auto;
+  }
+
+  @media (width >= 48rem) {
+    .responsive-table[data-layout='import-review'] .responsive-table-header {
+      grid-template-columns:
+        3rem minmax(0, 1fr) minmax(10rem, 14rem)
+        8rem 6rem 5rem;
+    }
+
+    .responsive-table[data-layout='import-review'] .responsive-table-fields {
+      grid-template-columns:
+        minmax(0, 1fr) minmax(10rem, 14rem)
+        8rem 6rem 5rem;
+    }
+
+    .responsive-table[data-layout='export-selection'] .responsive-table-header {
+      grid-template-columns:
+        3rem minmax(0, 1fr) 6rem 7rem
+        6rem 8rem 6rem;
+    }
+
+    .responsive-table[data-layout='export-selection'] .responsive-table-fields {
+      grid-template-columns:
+        minmax(0, 1fr) 6rem 7rem
+        6rem 8rem 6rem;
+    }
+  }
+}
+
+@media (width < 64rem) {
+  .download-save-table .responsive-table-header {
+    display: none;
+  }
+  .download-save-table .responsive-table-row {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1rem;
+  }
+  .download-save-table .responsive-table-row > :first-child {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
+  .download-save-table .responsive-table-fields {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .download-save-table .responsive-table-fields > :first-child {
+    padding-left: 2.5rem;
+    min-height: 2rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  .download-save-table .responsive-table-fields > div {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+  .download-save-table .responsive-table-fields .ui-section-label {
+    display: inline;
+  }
+}
+@media (width >= 64rem) {
+  .download-save-table[data-layout='export-selection']
+    .responsive-table-header {
+    grid-template-columns:
+      2rem minmax(8rem, 1fr) 3rem 7rem
+      5rem 7rem 4rem;
+  }
+  .download-save-table[data-layout='export-selection']
+    .responsive-table-fields {
+    grid-template-columns:
+      minmax(8rem, 1fr) 3rem 7rem
+      5rem 7rem 4rem;
+  }
+  .download-save-table .responsive-table-row {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+}
+
+.responsive-table[data-layout='shadow-crystals'] {
+  display: flex;
+  width: fit-content;
+  min-height: 0;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.responsive-table[data-layout='shadow-crystals'] .responsive-table-header {
+  display: grid;
+  height: 2rem;
+  flex-shrink: 0;
+  grid-template-columns: repeat(5, minmax(2rem, 1fr));
+  gap: 0;
+  padding: 0;
+}
+
+.responsive-table[data-layout='shadow-crystals'] [role='rowgroup'] {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.responsive-table[data-layout='shadow-crystals'] .responsive-table-row {
+  display: grid;
+  min-height: 2rem;
+  flex: 1;
+  grid-template-columns: repeat(5, minmax(2rem, 1fr));
+  gap: 0;
+  padding: 0;
+}
+
+.responsive-table[data-layout='shadow-crystals'] .responsive-table-row:hover,
+.responsive-table[data-layout='shadow-crystals']
+  .responsive-table-row:focus-within {
+  background-color: transparent;
+}

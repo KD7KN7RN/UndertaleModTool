@@ -1,0 +1,390 @@
+import { SaveDataPacks } from './SaveDataPacks';
+import { useState } from 'react';
+import DeleteIcon from '@assets/icons/trash.svg?react';
+import CancelIcon from '@assets/icons/close.svg?react';
+import {
+  Section,
+  TextLabel,
+  Card,
+  Heading,
+  InlineGroup,
+  Button,
+  ModalLayout,
+  ModalFooter,
+  FlagField,
+  TimeField,
+  MoneyField,
+  SaveSlotField,
+  SaveNameField,
+  InDarkWorldField,
+  SaveIsCompletionSaveField,
+  SaveIsSideBField,
+  RoomField,
+  PlotField,
+  Checkbox,
+  HelpTip,
+  SaveSourceBadge,
+  SaveFingerprint,
+  Badge,
+  PlayerNameField,
+} from '@components';
+import { FLAGS } from '@data';
+import { useGameData, useSave, useUi } from '@store';
+import { getSideBPhase } from '@utils';
+import { chapterHelpers } from '@utils/data-helpers';
+import { FINGERPRINT_ASPECT } from '@utils/save-fingerprint';
+import { formatLocalDateTime } from '@utils/format-date';
+import { saveStorage, toast } from '@services';
+import {
+  formatTranslation,
+  getChapterTranslationKeyPrefix,
+  getFlagTranslationKeyPrefix,
+  translateMeta,
+  useTranslation,
+} from '../../i18n';
+
+function Chapter() {
+  const { t } = useTranslation();
+  const value = useSave((s) => s.save?.meta.chapter) || 1;
+  const chapterMeta = chapterHelpers.getById(value);
+
+  return (
+    <Section id="chapter" className="flex flex-col justify-center h-19 gap-2">
+      <TextLabel>{t('ui.home.chapter', 'Chapter')}</TextLabel>
+      <InlineGroup className="leading-none">
+        <div className="w-8 h-8 bg-surface-3 flex justify-center items-center font-bold">
+          <p>{value}</p>
+        </div>
+        <p>
+          {
+            translateMeta(getChapterTranslationKeyPrefix(value), chapterMeta, t)
+              .displayName
+          }
+        </p>
+      </InlineGroup>
+    </Section>
+  );
+}
+
+function SaveId() {
+  const id = useSave((s) => s.save?.meta.id);
+  return (
+    <div className="text-text-2">
+      <p>ID: {id}</p>
+    </div>
+  );
+}
+
+function SaveTimestamp() {
+  const { t } = useTranslation();
+  const createdAt = useSave((s) => s.save?.meta.createdAt) ?? 0;
+  const modifiedAt = useSave((s) => s.save?.meta.modifiedAt) ?? 0;
+
+  return (
+    <div className="text-text-2">
+      <p>
+        {formatTranslation(t('ui.home.createdAt', 'Created at: {date}'), {
+          date: formatLocalDateTime(createdAt),
+        })}
+      </p>
+      <p>
+        {formatTranslation(t('ui.home.modifiedAt', 'Modified at: {date}'), {
+          date: formatLocalDateTime(modifiedAt),
+        })}
+      </p>
+    </div>
+  );
+}
+
+function SaveSource() {
+  const { t } = useTranslation();
+  const save = useSave((s) => s.save);
+
+  if (!save?.meta.source) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-text-2">
+        {t('ui.home.source', 'Source:')}
+      </span>
+      <SaveSourceBadge save={save} />
+    </div>
+  );
+}
+
+function SideBStatus() {
+  const { t } = useTranslation();
+  const save = useSave((s) => s.save);
+  const entry = useGameData((s) =>
+    s.flags.byId.get(FLAGS.SNOWGRAVE_ROUTE_PROGRESS),
+  );
+
+  if (!save || getSideBPhase(save) === 0) return null;
+
+  const progress = Number(save.flags[FLAGS.SNOWGRAVE_ROUTE_PROGRESS]) || 0;
+  const step = entry
+    ? translateMeta(
+        getFlagTranslationKeyPrefix(FLAGS.SNOWGRAVE_ROUTE_PROGRESS),
+        entry,
+        t,
+      ).valueRules?.map?.[progress]
+    : undefined;
+
+  return (
+    <div className="mt-2 flex items-center gap-2">
+      <Badge tone="frost">{t('ui.home.sideB', 'SIDE B')}</Badge>
+      {step && <span className="text-sm text-text-2">{step}</span>}
+    </div>
+  );
+}
+
+function SavePrint() {
+  const { t } = useTranslation();
+  const save = useSave((s) => s.save);
+
+  if (!save) return null;
+
+  return (
+    <figure className="mx-auto w-42 shrink-0 sm:mx-0">
+      <div
+        className={`w-full border border-border bg-surface-1 ${FINGERPRINT_ASPECT}`}
+      >
+        <SaveFingerprint save={save} />
+      </div>
+      <figcaption className="mt-2 text-center text-sm leading-snug text-text-2">
+        {t('ui.home.saveFingerprint', 'Unique fingerprint')}
+      </figcaption>
+    </figure>
+  );
+}
+
+function DeleteSave() {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const activeSaveId = useSave((s) => s.activeSaveId);
+  const setSave = useSave((s) => s.setSave);
+  const switchSave = useSave((s) => s.switchSave);
+
+  async function onDelete() {
+    if (!activeSaveId) return;
+    await saveStorage.remove(activeSaveId);
+
+    const storageKeys = await saveStorage.getKeys();
+    if (storageKeys.length === 0) {
+      setSave(null);
+    } else {
+      const nextSave = await saveStorage.get(storageKeys[0]);
+      if (nextSave) {
+        switchSave(nextSave.meta.id);
+      } else {
+        setSave(null);
+      }
+    }
+
+    setIsOpen(false);
+    toast(t('ui.home.saveDeleted', 'Save deleted.'), 'success');
+  }
+
+  return (
+    <>
+      <Button
+        variant="primary"
+        icon={<DeleteIcon />}
+        onClick={() => setIsOpen(true)}
+      >
+        {t('ui.home.deleteSave', 'Delete Save')}
+      </Button>
+      <ModalLayout
+        isOpen={isOpen}
+        setOpen={setIsOpen}
+        title={t('ui.home.deleteSave', 'Delete Save')}
+        footer={
+          <ModalFooter>
+            <Button
+              onClick={() => setIsOpen(false)}
+              variant="secondary"
+              icon={<CancelIcon />}
+            >
+              {t('ui.common.cancel', 'Cancel')}
+            </Button>
+            <Button
+              onClick={() => void onDelete()}
+              variant="primary"
+              size="lg"
+              icon={<DeleteIcon />}
+              className="w-full sm:w-auto sm:min-w-36"
+            >
+              {t('ui.common.delete', 'Delete')}
+            </Button>
+          </ModalFooter>
+        }
+      >
+        <div className="flex flex-col gap-3">
+          <p className="text-text-2">
+            {t(
+              'ui.home.deleteSaveConfirm',
+              'Are you sure you want to delete the current save from the editor?',
+            )}
+          </p>
+          <p className="ui-danger font-bold">
+            {t('ui.home.unreversible', 'This action cannot be reversed!')}
+          </p>
+        </div>
+      </ModalLayout>
+    </>
+  );
+}
+
+export function HomeOverview() {
+  const { t } = useTranslation();
+  const isSavePresent = useSave((s) => !!s.save);
+  const allowAllSaves = useUi((s) => s.ui.home.allowAllSaves);
+  const showDogcheckedRooms = useUi((s) => s.ui.home.showDogcheckedRooms);
+  const allowManualPlotEntry = useUi((s) => s.ui.home.allowManualPlotEntry);
+  const updateUi = useUi((s) => s.updateUi);
+
+  if (!isSavePresent) {
+    return (
+      <div className="page">
+        <Section>
+          <div className="flex items-center justify-center h-32 text-text-2">
+            {t('ui.home.noSaveLoaded', 'No save loaded')}
+          </div>
+        </Section>
+      </div>
+    );
+  }
+
+  return (
+    <article className="page flex flex-col">
+      <div className="flex flex-col gap-2 lg:flex-row lg:gap-5">
+        <InlineGroup>
+          <Checkbox
+            onChange={(checked) =>
+              updateUi((ui) => (ui.home.allowAllSaves = checked))
+            }
+            checked={allowAllSaves}
+            label={t(
+              'ui.home.showRoomsWithoutSavePoint',
+              'Show rooms without save point',
+            )}
+          />
+          <HelpTip
+            title={t(
+              'ui.home.showRoomsWithoutSavePoint',
+              'Show rooms without save point',
+            )}
+          >
+            <p>
+              Rooms without a save point are not expected to be the starting
+              point after loading save (or even being accessed at all), so
+              issues may occur.
+            </p>
+          </HelpTip>
+        </InlineGroup>
+        <InlineGroup>
+          <Checkbox
+            onChange={(checked) =>
+              updateUi((ui) => (ui.home.showDogcheckedRooms = checked))
+            }
+            checked={showDogcheckedRooms}
+            label={t('ui.home.showDogcheckedRooms', 'Show dogchecked rooms')}
+          />
+          <HelpTip
+            title={t('ui.home.showDogcheckedRooms', 'Show dogchecked rooms')}
+          >
+            <p>
+              Dogchecked rooms are not valid load targets and may send the
+              player to the dogcheck screen when the save is loaded.
+            </p>
+          </HelpTip>
+        </InlineGroup>
+        <InlineGroup>
+          <Checkbox
+            onChange={(checked) =>
+              updateUi((ui) => (ui.home.allowManualPlotEntry = checked))
+            }
+            checked={allowManualPlotEntry}
+            label={t(
+              'ui.home.allowManualPlotEntry',
+              'Allow manual plot point entry',
+            )}
+          />
+          <HelpTip
+            title={t(
+              'ui.home.allowManualPlotEntry',
+              'Allow manual plot point entry',
+            )}
+          >
+            <p>
+              Enter any plot point value directly instead of selecting from the
+              known chapter list.{' '}
+              <span className="ui-danger font-bold">
+                Invalid values may cause issues when loading the save.
+              </span>
+            </p>
+          </HelpTip>
+        </InlineGroup>
+      </div>
+      <>
+        <Section id="general">
+          <Card className="flex flex-col gap-3 p-6">
+            <Heading level={3}>{t('ui.home.general', 'General')}</Heading>
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 flex flex-col gap-3">
+                <Chapter />
+                <FlagField id="since-chapter" flag={FLAGS.STARTING_CHAPTER} />
+                <PlayerNameField id="player-name" />
+              </div>
+              <div className="flex-1 flex flex-col gap-3">
+                <MoneyField id="money" />
+                <MoneyField id="money" world="light" />
+                <FlagField id="points" flag={FLAGS.POINTS_CH3} />
+                <FlagField id="pink-coins" flag={FLAGS.PINK_COINS} />
+                <FlagField id="flowery-dollars" flag={FLAGS.FLOWERY_DOLLARS} />
+              </div>
+              <div className="flex-1 flex flex-col gap-3">
+                <RoomField
+                  id="room"
+                  showNonSavepoint={allowAllSaves}
+                  showDogcheckedRooms={showDogcheckedRooms}
+                />
+                <PlotField id="plot" allowManualEntry={allowManualPlotEntry} />
+                <InDarkWorldField id="in-dark-world" />
+                <TimeField />
+              </div>
+            </div>
+          </Card>
+        </Section>
+        <Section id="meta">
+          <Card className="flex flex-col gap-3 p-6">
+            <Heading level={3}>{t('ui.home.meta', 'Meta')}</Heading>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-5">
+              <SavePrint />
+              <div className="flex min-w-0 flex-1 flex-col gap-3 lg:flex-row lg:items-stretch">
+                <div className="flex flex-1 flex-col gap-3">
+                  <SaveNameField id="save-field" />
+                  <SaveSlotField id="save-slot" />
+                  <SaveIsCompletionSaveField id="save-is-completion-save" />
+                  <SaveIsSideBField id="save-is-side-b" />
+                </div>
+                <div className="flex flex-1 flex-col">
+                  <SaveSource />
+                  <SideBStatus />
+                  <div className="mt-2">
+                    <SaveId />
+                    <SaveTimestamp />
+                  </div>
+                  <div className="mt-auto flex flex-wrap justify-end gap-2 pt-3">
+                    <SaveDataPacks />
+                    <DeleteSave />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </Section>
+      </>
+    </article>
+  );
+}

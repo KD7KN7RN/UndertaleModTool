@@ -1,0 +1,993 @@
+import { useUi, type UiLocale } from '@store';
+import {
+  ARMORS,
+  ARMORS_META,
+  CHARACTERS,
+  CHARACTERS_META,
+  CHARACTER_TITLES,
+  CHAPTERS,
+  CHAPTERS_META,
+  CONSUMABLES,
+  CONSUMABLES_META,
+  ENEMIES,
+  ENEMIES_META,
+  EQUIPMENT_ABILITIES,
+  EQUIPMENT_ABILITIES_META,
+  FLAGS,
+  FLAGS_META,
+  KEYITEMS,
+  KEYITEMS_META,
+  LIGHTWORLDITEMS,
+  LIGHTWORLDITEMS_META,
+  PHONECONTACTS,
+  PHONECONTACTS_META,
+  ROOMS,
+  ROOMS_META,
+  SPELLS,
+  SPELLS_META,
+  WEAPONS,
+  WEAPONS_META,
+  FLAG_BITFIELDS_META,
+  type FlagBitfieldId,
+} from '@data';
+import ko from './locales/ko.json';
+import it from './locales/it.json';
+
+export const SUPPORTED_LOCALES = {
+  en: {
+    displayName: 'English',
+    flag: 'us',
+  },
+  ko: {
+    displayName: 'Korean',
+    flag: 'kr',
+  },
+  it: {
+    displayName: 'Italian',
+    flag: 'it',
+  },
+} as const;
+
+export type Locale = UiLocale;
+
+type TranslationDictionary = Record<string, string>;
+type TranslationValues = Record<string, string | number>;
+
+const TRANSLATIONS: Record<Exclude<Locale, 'en'>, TranslationDictionary> = {
+  ko,
+  it,
+};
+
+const FLAG_NAMES_BY_ID = Object.fromEntries(
+  Object.entries(FLAGS).map(([name, id]) => [id, name]),
+) as Record<number, string>;
+const ARMOR_NAMES_BY_ID = getNamesById(ARMORS);
+const CHARACTER_NAMES_BY_ID = getNamesById(CHARACTERS);
+const CHAPTER_NAMES_BY_ID = getNamesById(CHAPTERS);
+const CONSUMABLE_NAMES_BY_ID = getNamesById(CONSUMABLES);
+const ENEMY_NAMES_BY_ID = getNamesById(ENEMIES);
+const EQUIPMENT_ABILITY_NAMES_BY_ID = getNamesById(EQUIPMENT_ABILITIES);
+const KEYITEM_NAMES_BY_ID = getNamesById(KEYITEMS);
+const LIGHT_WORLD_ITEM_NAMES_BY_ID = getNamesById(LIGHTWORLDITEMS);
+const PHONE_CONTACT_NAMES_BY_ID = getNamesById(PHONECONTACTS);
+const ROOM_NAMES_BY_ID = getNamesById(ROOMS);
+const SPELL_NAMES_BY_ID = getNamesById(SPELLS);
+const WEAPON_NAMES_BY_ID = getNamesById(WEAPONS);
+
+const UI_FALLBACKS: TranslationDictionary = {
+  'ui.settings.title': 'Settings',
+  'ui.settings.general': 'General',
+  'ui.settings.sound': 'Sound',
+  'ui.settings.soundDescription':
+    'Plays sound effects from the game while you edit saves.',
+  'ui.settings.soundEffects': 'Sound effects',
+  'ui.settings.enableDeveloperMode': 'Enable developer mode',
+  'ui.settings.backupRestore': 'Backup & Restore',
+  'ui.settings.backupRestoreDescription':
+    'Export all your save data into a JSON file, or import it back from a backup.',
+  'ui.settings.exportAllSaves': 'Export All Saves',
+  'ui.settings.importSaves': 'Import Saves',
+  'ui.settings.language': 'Language',
+  'ui.settings.languageDescription':
+    'Choose which language the editor uses. Missing translations fall back to English.',
+  'ui.settings.languagePlaceholder': 'Select language...',
+  'ui.settings.exportFailed': 'Failed to export saves',
+  'ui.settings.importSuccess':
+    'Successfully imported {imported} save(s) (skipped {skipped})',
+  'ui.settings.importFailedGeneric': 'Failed to import backup file',
+  'ui.settings.dataPacks.title': 'Data packs',
+  'ui.settings.dataPacks.description':
+    'Import data packs here, then activate them on a save’s Overview page.',
+  'ui.settings.dataPacks.import': 'Import data pack',
+  'ui.settings.dataPacks.empty': 'No data packs imported.',
+  'ui.settings.dataPacks.imported': 'Imported {name}. Entries: {count}.',
+  'ui.settings.dataPacks.replaced': 'Replaced {name}. Entries: {count}.',
+  'ui.settings.dataPacks.count': 'Entries: {count}',
+  'ui.settings.dataPacks.modVersion': 'Version: {version}',
+  'ui.settings.dataPacks.remove': 'Remove pack',
+  'ui.settings.dataPacks.errorGeneric':
+    'Unable to import this data pack. Check the file and try again.',
+  'ui.settings.dataPacks.errorFileSize':
+    'Unable to import this pack. Files must be 1 MB or smaller.',
+  'ui.settings.dataPacks.errorJson':
+    'Unable to import this pack. Choose a valid JSON file.',
+  'ui.settings.dataPacks.errorRoot':
+    'Unable to import this pack. The JSON root must be an object.',
+  'ui.settings.dataPacks.errorVersion':
+    'Unable to import data-pack version {version}. This editor supports version {supported}.',
+  'ui.settings.dataPacks.errorData':
+    'Unable to import this pack. Data must be an object grouped by type.',
+  'ui.settings.dataPacks.errorEmpty':
+    'Unable to import this pack. Add at least one data entry.',
+  'ui.settings.dataPacks.errorTooManyEntries':
+    'Unable to import this pack. Packs can contain at most {max} entries.',
+  'ui.settings.dataPacks.errorEntry': '{entry} must be an object.',
+  'ui.settings.dataPacks.errorType':
+    'Unable to import this pack. {type} is not a supported data type.',
+  'ui.settings.dataPacks.errorGroup': 'Data group {type} must be an object.',
+  'ui.settings.dataPacks.errorEntryKey':
+    '{entry} is not a valid data-pack key. Use 1 to 64 letters, numbers, or underscores.',
+  'ui.settings.dataPacks.errorEntryId':
+    '{entry} ID must be a whole number of 1 or greater.',
+  'ui.settings.dataPacks.errorDisplayName': '{entry} must have a display name.',
+  'ui.settings.dataPacks.errorDisplayNameLength':
+    '{entry} display name must be {max} characters or fewer.',
+  'ui.settings.dataPacks.errorDescription': '{entry} description must be text.',
+  'ui.settings.dataPacks.errorDescriptionLength':
+    '{entry} description must be {max} characters or fewer.',
+  'ui.settings.dataPacks.errorAbility': '{entry} ability must be text.',
+  'ui.settings.dataPacks.errorAbilityLength':
+    '{entry} ability must be {max} characters or fewer.',
+  'ui.settings.dataPacks.errorChapters':
+    '{entry} chapters must be a non-empty list containing chapter numbers 1 through 5.',
+  'ui.settings.dataPacks.errorDuplicate':
+    '{type} defines ID {id} more than once.',
+  'ui.settings.dataPacks.errorPackId':
+    'Unable to import this pack. Add a unique pack ID.',
+  'ui.settings.dataPacks.errorPackName':
+    'Unable to import this pack. Add a pack name.',
+  'ui.settings.dataPacks.errorModVersion':
+    'The data-pack version must contain text.',
+  'ui.settings.dataPacks.errorStats':
+    '{entry} stats must include whole-number attack, defence, and magic values from -999 to 999.',
+  'ui.settings.dataPacks.errorIntegerRange':
+    '{entry} {field} must be a whole number from {min} to {max}.',
+  'ui.settings.dataPacks.errorCharacters':
+    '{entry} characters must be a non-empty list of character names.',
+  'ui.settings.dataPacks.errorCharacterName':
+    '{entry} characters includes unknown name {name}.',
+  'ui.settings.dataPacks.errorHealByCharacter':
+    '{entry} {field} must be an object of character names to heal values.',
+  'ui.settings.dataPacks.errorExtraHeal':
+    '{entry} extraHeal must be an object with host, character, and amount.',
+  'ui.settings.dataPacks.errorOverworld':
+    '{entry} overworld must be an object of heal values.',
+  'ui.settings.dataPacks.errorUnknownField':
+    '{entry} contains unsupported field {field}.',
+  'ui.settings.dataPacks.errorIcon':
+    '{entry} icon must be a valid equipment icon ID.',
+  'ui.settings.dataPacks.errorIntegerList':
+    '{entry} {field} must be a list of whole numbers.',
+  'ui.settings.dataPacks.errorValueRules':
+    '{entry} valueRules must be an object.',
+  'ui.settings.dataPacks.errorInteger':
+    '{entry} {field} must be a whole number.',
+  'ui.settings.dataPacks.errorValueMap':
+    '{entry} valueRules.map must map whole numbers to labels.',
+  'ui.settings.dataPacks.errorBoolean':
+    '{entry} {field} must be true or false.',
+  'ui.settings.dataPacks.errorBooleanMap':
+    '{entry} valueRules.booleanMap is invalid.',
+  'ui.settings.dataPacks.errorValueType':
+    '{entry} valueType must be boolean, number, map, or color.',
+  'ui.flag.numberPlaceholder': 'Enter number...',
+  'ui.flag.mapPlaceholder': 'Select value...',
+  'ui.dataPacks.activationConflict':
+    'These packs define the same IDs: {packs}. Deactivate a conflicting pack first.',
+  'ui.dataPacks.noneInstalled':
+    'Import packs in Settings, then activate them for this save.',
+  'ui.dataPacks.missing':
+    'Pack missing. Import it in Settings to restore its catalog data.',
+  'ui.dataPacks.conflict':
+    'Pack inactive because its IDs conflict with another selected pack. Deactivate a conflicting pack to resolve this.',
+  'ui.dataPacks.versionMismatch':
+    'Version differs. Referenced: {expected}. Installed: {installed}.',
+  'ui.dataPacks.unspecifiedVersion': 'Unspecified',
+  'ui.dataPacks.acceptVersion': 'Accept installed version',
+  'ui.dataPacks.title': 'Data packs',
+  'ui.dataPacks.activationDescription': 'Choose the packs used by this save.',
+  'ui.dataPacks.errorReferences': 'Data-pack references must be a list.',
+  'ui.dataPacks.errorReference': 'Each data-pack reference must be an object.',
+  'ui.dataPacks.errorDuplicateReferences':
+    'Data-pack references contain duplicate IDs.',
+  'ui.nav.about': 'About',
+  'ui.nav.armors': 'Armors',
+  'ui.nav.attributions': 'Attributions',
+  'ui.nav.changelog': 'Changelog',
+  'ui.nav.chapter1': 'Chapter 1',
+  'ui.nav.chapter2': 'Chapter 2',
+  'ui.nav.chapter3': 'Chapter 3',
+  'ui.nav.chapter4': 'Chapter 4',
+  'ui.nav.chapter5': 'Chapter 5',
+  'ui.nav.consumables': 'Consumables',
+  'ui.nav.devtools': 'Devtools',
+  'ui.nav.flags': 'Flags',
+  'ui.nav.home': 'Home',
+  'ui.nav.inventory': 'Inventory',
+  'ui.nav.keyItems': 'Key Items',
+  'ui.nav.kris': 'Kris',
+  'ui.nav.license': 'License',
+  'ui.nav.lightWorld': 'Light World',
+  'ui.nav.noelle': 'Noelle',
+  'ui.nav.overview': 'Overview',
+  'ui.nav.party': 'Party',
+  'ui.nav.ralsei': 'Ralsei',
+  'ui.nav.recruits': 'Recruits',
+  'ui.nav.settings': 'Settings',
+  'ui.nav.story': 'Story',
+  'ui.nav.susie': 'Susie',
+  'ui.nav.weapons': 'Weapons',
+  'ui.nav.welcome': 'Welcome',
+  'ui.common.noOptionsFound': 'No options found',
+  'ui.common.unknown': 'Unknown',
+  'ui.common.dataPackSource': 'Data pack: {name}',
+  'ui.common.empty': 'Empty',
+  'ui.common.invalid': 'Invalid',
+  'ui.common.none': 'None',
+  'ui.common.selectOption': 'Select an option...',
+  'ui.common.copyLinkToSection': 'Copy link to #{id}',
+  'ui.common.linkCopied': 'Link copied.',
+  'ui.common.linkCopyFailed': 'Failed to copy link.',
+  'ui.guard.developerModeDisabled': 'Developer mode is not enabled',
+  'ui.guard.noSaveLoaded': 'There is no save loaded',
+  'ui.guard.wrongChapter': 'This page is not available in this chapter',
+  'ui.header.downloadSave': 'Download save',
+  'ui.header.moreActions': 'More actions',
+  'ui.header.redo': 'Redo',
+  'ui.header.toggleSidebar': 'Toggle sidebar',
+  'ui.header.toggleSidebarRetraction': 'Toggle sidebar retraction',
+  'ui.header.undo': 'Undo',
+  'ui.header.share': 'Share',
+  'ui.share.added': 'Shared save added',
+  'ui.share.addSave': 'Add save',
+  'ui.share.goHome': 'Go to editor',
+  'ui.share.invalidLink': 'This share link is invalid or incomplete.',
+  'ui.share.invalidTitle': 'Cannot Read This Link',
+  'ui.share.playerName': 'Player name',
+  'ui.share.untitled': 'Untitled save',
+  'ui.share.importTitle': 'Add Shared Save',
+  'ui.share.authorLabel': 'Author',
+  'ui.share.descriptionLabel': 'Description',
+  'ui.share.authorPlaceholder': 'Optional',
+  'ui.share.descriptionPlaceholder': 'Optional',
+  'ui.share.copied': 'Share link copied',
+  'ui.share.copyFailed': 'Could not copy the link',
+  'ui.share.copyLink': 'Copy link',
+  'ui.share.playtime': 'Playtime',
+  'ui.share.room': 'Room',
+  'ui.share.sharedAt': 'Shared',
+  'ui.share.completionLabel': 'Completion',
+  'ui.share.yes': 'Yes',
+  'ui.share.no': 'No',
+  'ui.share.plot': 'Plot',
+  'ui.share.name': 'Name',
+  'ui.share.slot': 'Slot',
+  'ui.share.explanation':
+    'The whole save is written into the link, and the code holds that same link. The save data stays on your device — it is never sent to a server. Share the link or the code to load a copy of the save on another device.',
+  'ui.share.revokeWarning':
+    'Once you share this save, you cannot revoke it later.',
+  'ui.share.tooLong':
+    'This link is long enough that some chat apps may cut it short.',
+  'ui.share.title': 'Share Save',
+  'ui.share.defaultName': 'Shared save',
+  'ui.header.uploadSave': 'Upload save',
+  'ui.field.chapter': 'Chapter',
+  'ui.download.downloadAction': 'Download',
+  'ui.download.historyTitle': 'Shadow crystals',
+  'ui.download.historyShared':
+    'Shown on the file select screen. Regular and completion saves in the same chapter and slot share one entry.',
+  'ui.download.historyNone': 'No recorded result',
+  'ui.download.historyAutomatic': 'Automatic',
+  'ui.download.historyManual': 'Manual',
+  'ui.download.historyUnknown': 'Unknown value',
+  'ui.download.historyDefeatedByFighting': 'Defeated by fighting',
+  'ui.download.historySpared': 'Spared',
+  'ui.download.historyWon': 'Won',
+  'ui.download.historyLost': 'Lost',
+  'ui.download.historyDefeated': 'Defeated',
+  'ui.download.historyCompletedMigrated': 'Completed (migrated)',
+  'ui.download.historyBoth': 'Both recorded outcomes',
+  'ui.download.baseDrIni': 'Base dr.ini',
+  'ui.download.baseDrIniHintNone':
+    'Optional. Metadata is generated automatically if you skip this.',
+  'ui.download.baseDrIniHintImported':
+    'Using the dr.ini from an imported save. Click the field to replace it.',
+  'ui.download.baseDrIniHintOverride':
+    'Using this file instead of the imported dr.ini.',
+  'ui.download.baseContainer': 'Base container',
+  'ui.download.baseContainerDescription':
+    'A Switch container can keep entries you are not exporting. Imported dr.ini metadata is used automatically. Choose another container only if you want to override it.',
+  'ui.download.baseContainerHintNone':
+    'Optional. Other container entries are omitted if you skip this.',
+  'ui.download.baseContainerHintImported':
+    'Using metadata from an imported save. Click the field to replace it.',
+  'ui.download.baseContainerHintOverride':
+    'Using this container instead of the imported metadata.',
+  'ui.download.changesSinceBaseline': 'Changes since last upload or download',
+  'ui.download.clearBase': 'Clear base',
+  'ui.download.chooseFile': 'Choose file',
+  'ui.download.chooseContainer': 'Choose container',
+  'ui.download.downloadMultipleSaves': 'Download multiple saves',
+  'ui.download.downloadSave': 'Download',
+  'ui.download.downloadSaveFile': 'Download save file',
+  'ui.download.exportAs': 'Export as',
+  'ui.download.exportFailed': 'Could not create the export: {message}',
+  'ui.download.exportSaveSet': 'Export Save Set',
+  'ui.download.experimental': 'Experimental',
+  'ui.download.multipleSaves': 'Multiple saves',
+  'ui.download.singleSave': 'Single save',
+  'ui.download.multipleSavesExperimentalNotice':
+    'Multiple-save export is experimental.',
+  'ui.download.resetSettings': 'Reset settings',
+  'ui.download.inGameSlot': 'In-game slot',
+  'ui.download.pcSaveFile': 'PC save file',
+  'ui.download.savePlaceholder': 'Save',
+  'ui.download.saveSlots': 'Save slots',
+  'ui.download.savesAs': 'Saves as',
+  'ui.download.fileName': 'Download file name',
+  'ui.download.selectExportType': 'Select export type',
+  'ui.download.selectNamedSave': 'Select {name}',
+  'ui.download.selectAtLeastOneSwitchSave':
+    'Select at least one save for Switch export.',
+  'ui.download.selectAtLeastOneSwitchSaveForSet':
+    'Select at least one save for Switch export set',
+  'ui.download.switchContainer': 'Switch container',
+  'ui.download.switchExperimentalNotice': 'Switch export is experimental.',
+  'ui.download.noSaveLoadedCurrently': 'There is no save loaded currently',
+  'ui.download.noStoredSaves': 'No stored saves available.',
+  'ui.download.loadSavesFailed': 'Stored saves could not be loaded.',
+  'ui.download.duplicateTargets':
+    'Conflict: multiple saves target {targets}. Each slot can only contain one save.',
+  'ui.download.name': 'Name',
+  'ui.download.target': 'Target',
+  'ui.download.source': 'Source',
+  'ui.upload.chapter': 'Chapter',
+  'ui.upload.chooseFilesArchives': 'Choose files or archives',
+  'ui.upload.chooseFolder': 'Choose folder',
+  'ui.upload.chooseInputInstead': 'or choose what to import',
+  'ui.upload.chooseSwitchSave': 'Choose Switch Save',
+  'ui.upload.clearSelection': 'Clear selection',
+  'ui.upload.confirmChapter': 'Confirm Chapter',
+  'ui.upload.containedSave': 'Contained save',
+  'ui.upload.correctChapterQuestion': 'Is this the correct chapter?',
+  'ui.upload.discoveredSaves':
+    'Found {count} save candidate(s). Review what will be imported.',
+  'ui.upload.discoveringSaves': 'Discovering saves…',
+  'ui.upload.dragDropFilesFolders':
+    'Drag & drop saves, folders, or ZIP archives here',
+  'ui.upload.drIniRegenerated':
+    'dr.ini was imported and will be used as the base during multiple-save export.',
+  'ui.upload.folderDropUnsupported':
+    'This browser could not read the dropped folder. Use Choose folder or upload a ZIP archive instead.',
+  'ui.upload.importedSaves': 'Imported {count} save(s).',
+  'ui.upload.importingSaves': 'Importing saves…',
+  'ui.upload.importSelectedSaves': 'Import {count} save(s)',
+  'ui.upload.noSupportedSaves': 'No supported DELTARUNE saves were found.',
+  'ui.upload.readingSaves': 'Reading Saves',
+  'ui.upload.readInputFailed': 'Could not read the selected files.',
+  'ui.upload.reviewSaves': 'Review Saves',
+  'ui.upload.saveSettings': 'Save Settings',
+  'ui.upload.selectAllValid': 'Select all valid',
+  'ui.upload.selectCandidate': 'Select {name}',
+  'ui.upload.selectChapter': 'Select chapter',
+  'ui.upload.selectSave': 'Select save',
+  'ui.upload.switchContainerChooseEntry':
+    'This Switch container includes multiple save entries. Choose one to edit.',
+  'ui.upload.tooManyFolderFiles':
+    'The selected folder contains more than {count} files or folders. Choose a smaller folder or ZIP only the saves you want to import.',
+  'ui.upload.uploadFailed': 'Upload Failed',
+  'ui.upload.uploadSave': 'Upload Save',
+  'ui.upload.uploadSaves': 'Upload Saves',
+  'ui.upload.unsupportedChapterOrFormat':
+    'Unsupported chapter or save format detected. Please upload a DELTARUNE Chapter 1-5 PC, Mac, Linux, or already-exported save container.',
+  'ui.upload.chapterCannotChangeAfterUpload':
+    'This cannot be changed after the save is uploaded.',
+  'ui.common.back': 'Back',
+  'ui.common.next': 'Next',
+  'ui.common.tryAgain': 'Try again',
+  'ui.common.cancel': 'Cancel',
+  'ui.common.close': 'Close',
+  'ui.common.delete': 'Delete',
+  'ui.common.gotIt': 'Got it',
+  'ui.common.noSaves': 'No saves...',
+  'ui.common.help': 'Help',
+  'ui.common.clickToShowDescription': 'Click to show description',
+  'ui.common.loading': 'Loading...',
+  'ui.common.numberInput': 'Number input',
+  'ui.common.range': 'Range:',
+  'ui.common.uploadFile': 'Upload file',
+  'ui.common.dropFileHere': 'Drop your file here!',
+  'ui.common.dragDropFileHere': 'Drag & drop a file here',
+  'ui.common.clickToSelectFile': 'or click to select a file',
+  'ui.common.editorLoading': 'Editor is loading...',
+  'ui.common.loadingHeadline': 'MIKE, the BOARD, please!',
+  'ui.common.increase': 'Increase',
+  'ui.common.increaseValue': 'Increase value',
+  'ui.common.decrease': 'Decrease',
+  'ui.common.decreaseValue': 'Decrease value',
+  'ui.upload.confirmUpload': 'Confirm upload',
+  'ui.home.chapter': 'Chapter',
+  'ui.home.createdAt': 'Created at: {date}',
+  'ui.home.deleteSave': 'Delete Save',
+  'ui.home.deleteSaveConfirm':
+    'Are you sure you want to delete the current save from the editor?',
+  'ui.home.general': 'General',
+  'ui.home.meta': 'Meta',
+  'ui.home.modifiedAt': 'Modified at: {date}',
+  'ui.home.noSaveLoaded': 'No save loaded',
+  'ui.home.saveDeleted': 'Save deleted.',
+  'ui.home.allowManualPlotEntry': 'Allow manual plot point entry',
+  'ui.home.showDogcheckedRooms': 'Show dogchecked rooms',
+  'ui.home.showRoomsWithoutSavePoint': 'Show rooms without save point',
+  'ui.home.source': 'Source:',
+  'ui.home.sideB': 'SIDE B',
+  'ui.home.saveFingerprint': 'Unique fingerprint',
+  'ui.home.unreversible': 'This action cannot be reversed!',
+  'ui.home.welcomeTitle': 'Welcome',
+  'ui.home.welcomeDescription':
+    'Tenna Editor is a powerful tool for editing DELTARUNE save files.',
+  'ui.home.welcomeGettingStarted':
+    'To get started, click the area below or click the upload button in the top-right corner.',
+  'ui.home.backupReminder':
+    'Remember to always back up your saves before editing them!',
+  'ui.home.uploadSaveCta': 'Click here to upload save',
+  'ui.home.uploadSaveCtaSubtext':
+    'or click upload button in the top-right corner',
+  'ui.template.title': 'Start from scratch',
+  'ui.template.description':
+    'No save file at hand? Create a fresh save for a chapter. It works the same way you start in the game without a Completion Save: no items, no Dark Dollars, and the default equipment. But you can edit it right away.',
+  'ui.template.defaultName': 'CH{chapter} New Game',
+  'ui.template.created': 'New game save created.',
+  'ui.template.uploadLabel': 'or start from scratch',
+  'ui.home.whereToFindSaves': 'Where to find saves?',
+  'ui.home.saveLocationsIntro':
+    'Your DELTARUNE save files are typically located in the following directories:',
+  'ui.home.deltaportNote': "If you're using",
+  'ui.home.deltaportUnofficial': 'an unofficial native Linux port',
+  'ui.home.deltaportNoteSuffix': 'your saves are located at',
+  'ui.home.compatibility': 'Compatibility',
+  'ui.home.compatibilityDescription':
+    'Tenna Editor is compatible with DELTARUNE Chapter 1-5 save files from PC platforms and already-exported Switch save containers. Chapter 5 support includes editor data for recruits, rooms, items, weapons, and armors. Dedicated flags and plot points are not mapped yet.',
+  'ui.home.switchCompatibilityDescription':
+    'Switch save containers are experimental and require an already-exported {fileName}. Tenna Editor cannot extract or restore saves on hardware.',
+  'ui.home.platformPcWindows': 'PC (Windows)',
+  'ui.home.platformMac': 'Mac',
+  'ui.home.platformLinuxProton': 'Linux (through Steam Proton)',
+  'ui.lightWorld.items': 'Items',
+  'ui.lightWorld.itemsDescription':
+    'This inventory applies to Light World only.',
+  'ui.lightWorld.phoneContacts': 'Phone Contacts',
+  'ui.party.allowNonStandardParty': 'Allow non-standard party combinations',
+  'ui.party.allowNonStandardPartyDescription':
+    'Enabling this allows you to set every character at every slot.',
+  'ui.party.allowNonStandardPartyCrashWarning':
+    "The game isn't usually set up to handle this, so using it will usually lead to a lot of crashes.",
+  'ui.party.member': 'MEMBER',
+  'ui.party.level': 'LV{level}',
+  'ui.party.slot': 'Slot {slot}',
+  'ui.party.unknownCharacterDescription': 'This is unknown character',
+  'ui.recruits.cafe': 'Cafe',
+  'ui.recruits.cafeSeating': 'Cafe seating',
+  'ui.recruits.cafeSeatingDescription':
+    'Choose which recruit sits at each table in the Cafe at Castle Town.',
+  'ui.recruits.showNonRecruitableEnemies': 'Show non-recruitable enemies',
+  'ui.recruits.showNonRecruitableEnemiesDescription1':
+    'All Chapter 1 and 2 enemies have their respective recruitment flags.',
+  'ui.recruits.showNonRecruitableEnemiesDescription2':
+    'These do not affect anything but do exist.',
+  'ui.recruits.showNonRecruitableEnemiesDescription3':
+    'This option allows to set them as recruited.',
+  'ui.story.searchFields': 'Search fields',
+  'ui.story.searchPlaceholder': 'Search story fields...',
+  'ui.story.vessel': 'Vessel',
+  'ui.story.thrashMachine': 'Thrash Machine',
+  'ui.story.thrashFit': 'Thrash Fit',
+  'ui.field.armorI': 'Armor I',
+  'ui.field.armorII': 'Armor II',
+  'ui.field.armor': 'Armor',
+  'ui.field.completionSave': 'Completion save',
+  'ui.field.sideB': 'Side B save',
+  'ui.field.currentRoom': 'Current Room',
+  'ui.field.inDarkWorld': 'Currently in Dark World',
+  'ui.field.inGameSlot': 'In-game slot',
+  'ui.field.lightWorldMoney': 'Light World Money',
+  'ui.field.money': 'Money (D$)',
+  'ui.field.name': 'Name',
+  'ui.field.playerName': 'Player Name',
+  'ui.field.playtime': 'Playtime',
+  'ui.field.plotPoint': 'Plot Point',
+  'ui.field.recruited': 'Recruited',
+  'ui.field.recruitCount': 'Recruit count',
+  'ui.field.saveName': 'Save name',
+  'ui.field.selectArmor': 'Select an armor...',
+  'ui.field.selectConsumable': 'Select a consumable...',
+  'ui.field.selectItem': 'Select an item...',
+  'ui.field.selectKeyItem': 'Select a key item...',
+  'ui.field.selectMoney': 'Enter money amount...',
+  'ui.field.selectPlayerName': 'Enter player name...',
+  'ui.field.selectPlotPoint': 'Select a plot point...',
+  'ui.field.selectRoom': 'Select a room...',
+  'ui.field.selectSlot': 'Select slot',
+  'ui.field.completeSlot': 'Complete {slot}',
+  'ui.field.selectSpell': 'Select a spell...',
+  'ui.field.selectStorageItem': 'Select a storage item...',
+  'ui.field.selectWeapon': 'Select a weapon...',
+  'ui.field.selectVesselName': 'Enter vessel name...',
+  'ui.field.slot': 'Slot',
+  'ui.field.spell': 'Spell',
+  'ui.field.status': 'Status',
+  'ui.field.weapon': 'Weapon',
+  'ui.stats.attack': 'Attack',
+  'ui.stats.defence': 'Defence',
+  'ui.stats.magic': 'Magic',
+  'ui.stats.experience': 'Experience',
+  'ui.stats.currentHp': 'Current HP',
+  'ui.stats.maxHp': 'Max HP',
+  'ui.stats.level': 'Level',
+  'ui.stats.enterValue': 'Enter value...',
+  'ui.flags.advancedWarning':
+    'This feature is intended for advanced users only who want more control over specific flags.',
+  'ui.flags.alreadyCoveredWarning':
+    'Some of the flags are already covered by other parts of the editor.',
+  'ui.flags.corruptionWarning':
+    'Modifying flags incorrectly may corrupt your save file.',
+  'ui.flags.descriptionColumn': 'Description',
+  'ui.flags.enterValue': 'Enter value...',
+  'ui.flags.flagColumn': 'Flag',
+  'ui.flags.flagsPerPage': 'Flags per page',
+  'ui.flags.flagsTotal': '{count} flags total',
+  'ui.flags.idColumn': 'Id',
+  'ui.flags.invalidNumber': 'Invalid number.',
+  'ui.flags.knownValues': 'Known values:',
+  'ui.flags.manualEdit': 'Manual edit',
+  'ui.flags.namesWorkInProgress':
+    'NOTE: Flag names are work in progress and may be changed with future updates.',
+  'ui.flags.noFlagsFound': 'No flags found.',
+  'ui.flags.paginationFirst': 'First page',
+  'ui.flags.paginationLast': 'Last page',
+  'ui.flags.paginationNext': 'Next page',
+  'ui.flags.paginationPrevious': 'Previous page',
+  'ui.flags.searchPlaceholder': 'Search flags...',
+  'ui.flags.valueColumn': 'Value',
+  'ui.flags.apply': 'Apply',
+  'ui.flags.applied': 'Applied',
+  'ui.flags.bitfield': 'Bitfield',
+  'ui.flags.bitfieldIndex': 'Bitfield index',
+  'ui.flags.enterFlagId': 'Enter a flag id to inspect.',
+  'ui.flags.fieldIndex': 'Field index',
+  'ui.flags.flagId': 'Flag id',
+  'ui.flags.manualFlagId': 'Manual flag id',
+  'ui.flags.manualFlagValue': 'Manual flag value',
+  'ui.flags.pendingChange': 'Pending change',
+  'ui.flags.thisFlagHasKnownBitfields': 'This flag has known bitfields.',
+  'ui.flags.unlistedFlag': "This flag isn't listed.",
+  'ui.flags.useBitfieldValue': 'Use Bitfield value',
+  'ui.flags.width': 'Width',
+  'ui.inventory.storage': 'Storage',
+  'ui.party.allowNonCharacterEquipment':
+    "Allow non-{name}'s weapons, armors and spells",
+  'ui.party.preserveCustomStats': 'Keep custom stats when changing equipment',
+  'ui.party.preserveCustomStatsDescription':
+    'When enabled, changing a weapon or armor keeps the existing AT, DF and MAG instead of recalculating them for the new equipment.',
+  'ui.party.resetStats': 'Reset stats',
+  'ui.party.resetStatsDescription':
+    'Reset stats restores the normal AT, DF and MAG for this chapter and the currently equipped items.',
+  'ui.party.spells': 'Spells',
+  'ui.party.unobtainableSpellsWarning':
+    'Some of the spells are unobtainable in game. They are often unfinished, broken and can cause issues.',
+  'ui.recruits.lost': 'Lost',
+  'ui.recruits.notRecruited': 'Not recruited',
+  'ui.recruits.recruited': 'Recruited',
+  'ui.recruits.unused': 'Unused',
+  'ui.backup.noSavesToExport': 'No saves to export',
+  'ui.backup.exportedSaves': 'Exported {count} save(s)',
+  'ui.backup.invalidBackupNotJson': 'Invalid backup file: not valid JSON',
+  'ui.backup.invalidBackupNoSaves': 'Invalid backup file: no saves found',
+  'ui.save.switchedTo': 'Switched to save "{name}"',
+  'ui.save.switchError': 'Error occured while switching to new save',
+  'ui.storage.loadFailed': 'Failed to load save data',
+  'ui.storage.saveFailed': 'Failed to save data',
+  'ui.storage.removeFailed': 'Failed to remove save data',
+  'ui.storage.loadAllFailed': 'Failed to load saves',
+  'ui.storage.migrateFailed': 'Failed to migrate save data',
+  'ui.sw.updating': 'Editor is updating...',
+  'ui.sw.updated': 'Editor was updated to version {version}',
+  'ui.sw.checkChangelog': 'Check out changelog in the About page',
+  'ui.sw.registrationFailed': 'Failed to register service worker',
+  'ui.flags.manualIntro':
+    'Target a flag by id and write a direct value or a bitfield value.',
+  'ui.flags.directValue': 'Direct value',
+  'ui.flags.bitfieldValueTab': 'Bitfield value',
+  'ui.flags.flagIdRange': 'Flag id must be between 0 and {max}.',
+  'ui.flags.valueMustBeFinite': 'Value must be a finite number.',
+  'ui.flags.fieldIndexMustBeNonNegative':
+    'Field index must be a non-negative integer.',
+  'ui.flags.widthMustBePositive': 'Width must be a positive integer.',
+  'ui.flags.valueMustBeNonNegative': 'Value must be a non-negative integer.',
+  'ui.flags.valueRange': 'Value must be between 0 and {max}.',
+  'ui.about.legalInfo': 'Legal Info',
+  'ui.about.fanProject': 'This is fan made project.',
+  'ui.about.notAffiliated':
+    'This project is not affiliated with, endorsed by, or in any way associated with Toby Fox or any related entities.',
+  'ui.about.deltaruneTrademark':
+    'DELTARUNE™ is a registered trademark of Royal Sciences, LLC',
+  'ui.about.assetsNotice':
+    'The assets used in this project from the DELTARUNE™ are copyrighted by Toby Fox and included under the fair use for non-commercial, transformative purposes. No endorsement is implied.',
+  'ui.about.privacy': 'Privacy',
+  'ui.about.privacyLocal':
+    'We don’t collect or store anything about you. All data is processed on-device and never sent anywhere.',
+  'ui.about.cloudflarePrivacy':
+    'Tenna Editor is hosted on Cloudflare, which may collect some of your personal data.',
+  'ui.about.cloudflarePrivacyLink':
+    "Click here to read Cloudflare's privacy policy and GDPR/HIPAA compliance info.",
+  'ui.about.sourceCode': 'Source Code',
+  'ui.about.sourceCodeDescription':
+    'The source code of Tenna Editor is available on {host}',
+  'ui.about.contributors': 'Contributors',
+  'ui.about.buildInfo': 'Build Info',
+  'ui.about.buildId': 'ID: {value}',
+  'ui.about.buildVersion': 'Version: {value}',
+  'ui.about.buildEnvironment': 'Environment: {value}',
+  'ui.about.buildBranch': 'Branch: {value}',
+  'ui.about.buildTimestamp': 'Timestamp: {value}',
+  'ui.about.license': 'License',
+  'ui.about.specialThanks': 'Special Thanks',
+  'ui.about.specialThanksToby':
+    'Toby Fox and whole Team behind DELTARUNE - for creating the game.',
+  'ui.about.specialThanksSpamton':
+    'Spamton Editor - for being direct inspiration.',
+  'ui.about.specialThanksSpamtonSuffix': ' - for being direct inspiration.',
+  'ui.about.specialThanksFlowey':
+    "Flowey's Time Machine - for being another inspiration.",
+  'ui.about.specialThanksFloweySuffix': ' - for being another inspiration.',
+  'ui.about.specialThanksJacky':
+    "Jacky720's \"Flowey's Time Machine\" fork - for save data research and references that helped with a lot of Tenna Editor's data mapping.",
+  'ui.about.specialThanksJackySuffix':
+    " - for save data research and references that helped with a lot of Tenna Editor's data mapping.",
+  'ui.about.specialThanksWiki':
+    'DELTARUNE Wiki - for much useful information that sped up the process of building this project significantly.',
+  'ui.about.specialThanksWikiSuffix':
+    ' - for much useful information that sped up the process of building this project significantly.',
+  'ui.about.specialThanksUmt':
+    'Undertale Mod Tool - for allowing me to mine through the game code and assets to understand how things work.',
+  'ui.about.specialThanksUmtSuffix':
+    ' - for allowing me to mine through the game code and assets to understand how things work.',
+  'ui.about.pixelOperatorLicensePrefix':
+    'Pixel Operator by Jayvee Enaguas (HarvettFox96) - License:',
+  'ui.about.sourcePrefix': 'Source:',
+  'ui.about.pixelarticonsAttribution':
+    'Pixelarticons by Gerrit Halfmann — License: {license}. Website: {website}',
+  'ui.about.pixelarticonsLicensePrefix':
+    'Pixelarticons by Gerrit Halfmann — License:',
+  'ui.about.websitePrefix': 'Website:',
+  'ui.about.fonts': 'Fonts',
+  'ui.about.icons': 'Icons',
+  'ui.about.dependencies': 'Dependencies',
+  'ui.about.licenseLabel': 'License: {license}',
+  'ui.about.sourceLabel': 'Source: {source}',
+  'ui.about.websiteLabel': 'Website: {website}',
+  'ui.placeholder.loadingHeadline': 'MIKE, the BOARD, please!',
+  'ui.placeholder.underConstruction': 'This tab is under construction',
+  'ui.saveSource.importedSwitch':
+    'Imported from an already-exported save container',
+  'ui.saveSource.importedPc': 'Imported from a PC save file',
+  'ui.saveSource.switch': 'SWITCH',
+  'ui.saveSource.pc': 'PC',
+};
+
+const SOURCE_TRANSLATIONS = {
+  ...UI_FALLBACKS,
+  ...getMetaSourceTranslations('flags', FLAGS_META, FLAG_NAMES_BY_ID),
+  ...getMetaSourceTranslations('flagBitfields', FLAG_BITFIELDS_META),
+  ...getMetaSourceTranslations('items.armors', ARMORS_META, ARMOR_NAMES_BY_ID),
+  ...getMetaSourceTranslations(
+    'items.consumables',
+    CONSUMABLES_META,
+    CONSUMABLE_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations(
+    'items.keyItems',
+    KEYITEMS_META,
+    KEYITEM_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations(
+    'items.lightWorldItems',
+    LIGHTWORLDITEMS_META,
+    LIGHT_WORLD_ITEM_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations(
+    'items.phoneContacts',
+    PHONECONTACTS_META,
+    PHONE_CONTACT_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations(
+    'items.weapons',
+    WEAPONS_META,
+    WEAPON_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations(
+    'characters',
+    CHARACTERS_META,
+    CHARACTER_NAMES_BY_ID,
+  ),
+  ...getCharacterTitleSourceTranslations(),
+  ...getMetaSourceTranslations('chapters', CHAPTERS_META, CHAPTER_NAMES_BY_ID),
+  ...getMetaSourceTranslations('enemies', ENEMIES_META, ENEMY_NAMES_BY_ID),
+  ...getMetaSourceTranslations(
+    'equipmentAbilities',
+    EQUIPMENT_ABILITIES_META,
+    EQUIPMENT_ABILITY_NAMES_BY_ID,
+  ),
+  ...getMetaSourceTranslations('rooms', ROOMS_META, ROOM_NAMES_BY_ID),
+  ...getMetaSourceTranslations('spells', SPELLS_META, SPELL_NAMES_BY_ID),
+};
+
+export function isSupportedLocale(value: unknown): value is Locale {
+  return (
+    typeof value === 'string' &&
+    Object.prototype.hasOwnProperty.call(SUPPORTED_LOCALES, value)
+  );
+}
+
+function getMetaSourceTranslations(
+  namespace: string,
+  entries: Record<
+    string | number,
+    | {
+        displayName: string;
+        description?: string;
+        valueRules?: {
+          map?: Record<number, string>;
+        };
+      }
+    | undefined
+  >,
+  namesById?: Record<number, string>,
+) {
+  const source: TranslationDictionary = {};
+
+  Object.entries(entries).forEach(([rawId, meta]) => {
+    if (!meta) return;
+    const name = namesById?.[Number(rawId)] ?? rawId;
+    const keyPrefix = `${namespace}.${name}`;
+
+    source[`${keyPrefix}.displayName`] = meta.displayName;
+    if (meta.description) {
+      source[`${keyPrefix}.description`] = meta.description;
+    }
+    Object.entries(meta.valueRules?.map ?? {}).forEach(([value, label]) => {
+      source[`${keyPrefix}.map.${value}`] = label;
+    });
+  });
+
+  return source;
+}
+
+function getNamesById<TName extends string, TId extends number>(
+  registry: Record<TName, TId>,
+) {
+  return Object.fromEntries(
+    Object.entries(registry).map(([name, id]) => [id, name]),
+  ) as Record<number, string>;
+}
+
+function getCharacterTitleSourceTranslations() {
+  const source: TranslationDictionary = {};
+
+  Object.entries(CHARACTER_TITLES).forEach(([characterName, titles]) => {
+    Object.entries(titles).forEach(([titleName, title]) => {
+      const keyPrefix = `characterTitles.${characterName}.${titleName}`;
+      source[`${keyPrefix}.name`] = title.name;
+      source[`${keyPrefix}.description`] = title.description;
+    });
+  });
+
+  return source;
+}
+
+export function translate(
+  key: string,
+  fallback: string,
+  locale: Locale = useUi.getState().ui.locale,
+) {
+  if (locale === 'en') return fallback;
+  return TRANSLATIONS[locale][key] ?? fallback;
+}
+
+export function formatTranslation(template: string, values: TranslationValues) {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+    values[key] === undefined ? match : String(values[key]),
+  );
+}
+
+export function useTranslation() {
+  const locale = useUi((s) => s.ui.locale);
+
+  return {
+    locale,
+    t: (key: string, fallback: string) => translate(key, fallback, locale),
+  };
+}
+
+function getNamedKeyPrefix(
+  namespace: string,
+  id: number,
+  namesById: Record<number, string>,
+) {
+  const name = namesById[id];
+  return name ? `${namespace}.${name}` : undefined;
+}
+
+export function getFlagTranslationKeyPrefix(id: number) {
+  const flagName = FLAG_NAMES_BY_ID[id];
+  return flagName ? `flags.${flagName}` : undefined;
+}
+
+export function getFlagBitfieldTranslationKeyPrefix(id: FlagBitfieldId) {
+  return `flagBitfields.${id}`;
+}
+
+export function getArmorTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('items.armors', id, ARMOR_NAMES_BY_ID);
+}
+
+export function getCharacterTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('characters', id, CHARACTER_NAMES_BY_ID);
+}
+
+export function getCharacterTitleTranslationKeyPrefix(
+  characterId: number,
+  title: { name: string; description: string },
+) {
+  const characterName = CHARACTER_NAMES_BY_ID[characterId];
+  const titles = characterName
+    ? CHARACTER_TITLES[characterName as keyof typeof CHARACTER_TITLES]
+    : undefined;
+  if (!titles) return undefined;
+
+  const titleName = Object.entries(titles).find(
+    ([, candidate]) => candidate === title,
+  )?.[0];
+
+  return titleName
+    ? `characterTitles.${characterName}.${titleName}`
+    : undefined;
+}
+
+export function getChapterTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('chapters', id, CHAPTER_NAMES_BY_ID);
+}
+
+export function getConsumableTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('items.consumables', id, CONSUMABLE_NAMES_BY_ID);
+}
+
+export function getEnemyTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('enemies', id, ENEMY_NAMES_BY_ID);
+}
+
+export function getEquipmentAbilityTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix(
+    'equipmentAbilities',
+    id,
+    EQUIPMENT_ABILITY_NAMES_BY_ID,
+  );
+}
+
+export function getItemTranslationKeyPrefix(
+  kind:
+    | 'armor'
+    | 'consumable'
+    | 'keyItem'
+    | 'lightWorldItem'
+    | 'phoneContact'
+    | 'storage'
+    | 'weapon',
+  id: number,
+) {
+  switch (kind) {
+    case 'armor':
+      return getArmorTranslationKeyPrefix(id);
+    case 'consumable':
+    case 'storage':
+      return getConsumableTranslationKeyPrefix(id);
+    case 'keyItem':
+      return getNamedKeyPrefix('items.keyItems', id, KEYITEM_NAMES_BY_ID);
+    case 'lightWorldItem':
+      return getNamedKeyPrefix(
+        'items.lightWorldItems',
+        id,
+        LIGHT_WORLD_ITEM_NAMES_BY_ID,
+      );
+    case 'phoneContact':
+      return getNamedKeyPrefix(
+        'items.phoneContacts',
+        id,
+        PHONE_CONTACT_NAMES_BY_ID,
+      );
+    case 'weapon':
+      return getWeaponTranslationKeyPrefix(id);
+  }
+}
+
+export function getRoomTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('rooms', id, ROOM_NAMES_BY_ID);
+}
+
+export function getSpellTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('spells', id, SPELL_NAMES_BY_ID);
+}
+
+export function getWeaponTranslationKeyPrefix(id: number) {
+  return getNamedKeyPrefix('items.weapons', id, WEAPON_NAMES_BY_ID);
+}
+
+export function getLocaleTranslationStats(locale: Locale) {
+  const total = Object.keys(SOURCE_TRANSLATIONS).length;
+  if (locale === 'en') return { translated: total, total, percentage: 100 };
+
+  const dictionary = TRANSLATIONS[locale];
+  const translated = Object.entries(SOURCE_TRANSLATIONS).filter(
+    ([key, fallback]) =>
+      dictionary[key] !== undefined &&
+      dictionary[key].trim() !== '' &&
+      dictionary[key] !== fallback,
+  ).length;
+
+  return {
+    translated,
+    total,
+    percentage: total > 0 ? Math.round((translated / total) * 100) : 100,
+  };
+}
+
+export function translateMeta<
+  T extends {
+    displayName: string;
+    description?: string;
+    valueRules?: {
+      map?: Record<number, string>;
+    };
+  },
+>(
+  keyPrefix: string | undefined,
+  meta: T,
+  t: (key: string, fallback: string) => string,
+): T {
+  const translateWithPrefixes = (field: string, fallback: string) => {
+    if (!keyPrefix) return fallback;
+    return t(`${keyPrefix}.${field}`, fallback);
+  };
+  const translatedMap = meta.valueRules?.map
+    ? (Object.fromEntries(
+        Object.entries(meta.valueRules.map).map(([value, label]) => [
+          value,
+          translateWithPrefixes(`map.${value}`, label),
+        ]),
+      ) as Record<number, string>)
+    : undefined;
+
+  return {
+    ...meta,
+    displayName: translateWithPrefixes('displayName', meta.displayName),
+    description: meta.description
+      ? translateWithPrefixes('description', meta.description)
+      : undefined,
+    valueRules: translatedMap
+      ? {
+          ...meta.valueRules,
+          map: translatedMap,
+        }
+      : meta.valueRules,
+  } as T;
+}

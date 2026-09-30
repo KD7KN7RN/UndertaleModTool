@@ -1,0 +1,59 @@
+name: Deploy to Cloudflare Pages (Branch)
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - 'dependabot/**'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-branch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    env:
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_PROJECT: tenna
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUILD_DIR: dist
+      BRANCH: ${{ github.ref_name }}
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+        env:
+          VITE_DEPLOY_TARGET: preview
+
+      - name: deploy with wrangler
+        id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ env.CF_API_TOKEN }}
+          accountId: ${{ env.CF_ACCOUNT_ID }}
+          command: >
+            pages deploy ${{ env.BUILD_DIR }}
+            --project-name=${{ env.CF_PROJECT }}
+            --branch=${{ github.ref_name }}
+
+      - name: report url
+        run: |
+          {
+            echo "### Branch preview"
+            echo
+            echo "Branch: \`${{ github.ref_name }}\`"
+            echo
+            echo "Deployment: ${{ steps.deploy.outputs.deployment-url }}"
+          } >> "$GITHUB_STEP_SUMMARY"
