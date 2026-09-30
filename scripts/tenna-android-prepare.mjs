@@ -60,7 +60,7 @@ c = c.replace("  ko,\n  it,", "  ko,\n  it,\n  ar,");
 c = c.replace("document.documentElement.lang = locale === 'en' ? 'en' : locale;", "document.documentElement.lang = locale === 'en' ? 'en' : locale;");
 writeFileSync(i18n, c);
 
-let u = readFileSync(ui, 'utf8').replace("locale: 'en',", "locale: 'ar',");
+let u = readFileSync(ui, 'utf8').replace("export type UiLocale = 'en' | 'ko' | 'it';", "export type UiLocale = 'en' | 'ko' | 'it' | 'ar';").replace("locale: 'en',", "locale: 'ar',");
 writeFileSync(ui, u);
 
 let a = readFileSync(app, 'utf8');
