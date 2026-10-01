@@ -45,7 +45,7 @@ public partial class MainViewModel : ObservableObject
     public ImportExportService ImportExportService = null!;
 
     // Window
-    public string Title => $"UndertaleModToolAvalonia by luizzeroxis by Genouka - v" +
+    public string Title => $"KDUTMT Editor - v" +
         (App.VersionString) +
         $"{(Project?.Name is not null ? " - " + Project.Name : "")}" +
         $"{(Data?.GeneralInfo is not null ? " - " + Data.GeneralInfo.ToString() : "")}" +
