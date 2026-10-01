@@ -20,7 +20,10 @@
     </Interaction.Behaviors>
 
     <DockPanel>
-        <l:MenuBarCompat DockPanel.Dock="Top" />
+        <DockPanel DockPanel.Dock="Top">
+            <Button DockPanel.Dock="Right" Command="{Binding OpenEditors}" Content="محرر DELTARUNE" Margin="4" />
+            <l:MenuBarCompat />
+        </DockPanel>
         
         <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto">
             <TextBox Grid.Column="0" Name="CommandTextBox" Text="{Binding CommandTextBoxText}" AcceptsReturn="True" />
