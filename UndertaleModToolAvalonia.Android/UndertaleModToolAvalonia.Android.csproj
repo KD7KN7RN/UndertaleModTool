@@ -27,7 +27,7 @@
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
         <RunAOTCompilation>false</RunAOTCompilation>
         <EnableLLVM>false</EnableLLVM>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <SatelliteResourceLanguages>en;zh-CN;zh-Hans;ja;ko;pt;tr;arz</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup>
