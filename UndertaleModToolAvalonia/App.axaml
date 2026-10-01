@@ -51,44 +51,44 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <!-- Backgrounds -->
-                    <SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="#232734" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumHighBrush" Color="#2A2E3C" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumBrush" Color="#272B38" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumLowBrush" Color="#252936" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundAltLowBrush" Color="#212532" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundBaseLowBrush" Color="#1D212D" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundBaseMediumBrush" Color="#212532" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundBaseMediumHighBrush" Color="#2A2E3C" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundBaseHighBrush" Color="#3A3F50" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="#1D2B22" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumHighBrush" Color="#24352A" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumBrush" Color="#213027" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundAltMediumLowBrush" Color="#1F2D24" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundAltLowBrush" Color="#1B281F" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundBaseLowBrush" Color="#18241C" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundBaseMediumBrush" Color="#1B281F" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundBaseMediumHighBrush" Color="#24352A" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundBaseHighBrush" Color="#314536" />
                     <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumBrush" Color="#252937" />
                     <SolidColorBrush x:Key="SystemControlBackgroundChromeMediumLowBrush" Color="#1E222E" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundChromeHighBrush" Color="#2A2E3C" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundListLowBrush" Color="#1D212D" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundListMediumBrush" Color="#2E3344" />
-                    <SolidColorBrush x:Key="SystemControlBackgroundListMediumHighBrush" Color="#353B4D" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundChromeHighBrush" Color="#24352A" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundListLowBrush" Color="#18241C" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundListMediumBrush" Color="#273A2D" />
+                    <SolidColorBrush x:Key="SystemControlBackgroundListMediumHighBrush" Color="#2D4233" />
                     <!-- Foregrounds -->
-                    <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="#E6E8F0" />
-                    <SolidColorBrush x:Key="SystemControlForegroundBaseMediumBrush" Color="#A6ABC0" />
-                    <SolidColorBrush x:Key="SystemControlForegroundBaseMediumLowBrush" Color="#7C8196" />
-                    <SolidColorBrush x:Key="SystemControlForegroundBaseLowBrush" Color="#585D72" />
-                    <SolidColorBrush x:Key="SystemControlForegroundAltHighBrush" Color="#14161D" />
-                    <SolidColorBrush x:Key="SystemControlForegroundAltMediumHighBrush" Color="#1B1E26" />
-                    <SolidColorBrush x:Key="SystemControlForegroundAltMediumBrush" Color="#232631" />
-                    <SolidColorBrush x:Key="SystemControlForegroundAltLowBrush" Color="#2B2F3C" />
+                    <SolidColorBrush x:Key="SystemControlForegroundBaseHighBrush" Color="#E7F2E9" />
+                    <SolidColorBrush x:Key="SystemControlForegroundBaseMediumBrush" Color="#A7B9AC" />
+                    <SolidColorBrush x:Key="SystemControlForegroundBaseMediumLowBrush" Color="#7E9785" />
+                    <SolidColorBrush x:Key="SystemControlForegroundBaseLowBrush" Color="#5D7564" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAltHighBrush" Color="#111A14" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAltMediumHighBrush" Color="#162319" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAltMediumBrush" Color="#1B2A20" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAltLowBrush" Color="#22352A" />
                     <!-- Highlights / hover / selection -->
-                    <SolidColorBrush x:Key="SystemControlHighlightBaseLowBrush" Color="#4A4F63" />
-                    <SolidColorBrush x:Key="SystemControlHighlightBaseMediumBrush" Color="#5A6075" />
-                    <SolidColorBrush x:Key="SystemControlHighlightBaseMediumHighBrush" Color="#6B7187" />
-                    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="#7C829A" />
-                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseLowBrush" Color="#4A4F63" />
-                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseMediumBrush" Color="#5A6075" />
-                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseMediumHighBrush" Color="#6B7187" />
-                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseHighBrush" Color="#7C829A" />
-                    <SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="#2C3141" />
-                    <SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="#3D4A78" />
-                    <SolidColorBrush x:Key="SystemControlHighlightListAccentLowBrush" Color="#2E3A63" />
-                    <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="#3D4A78" />
-                    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="#4A5A90" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseLowBrush" Color="#476451" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseMediumBrush" Color="#5D7864" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseMediumHighBrush" Color="#71907A" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="#86A48E" />
+                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseLowBrush" Color="#476451" />
+                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseMediumBrush" Color="#5D7864" />
+                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseMediumHighBrush" Color="#71907A" />
+                    <SolidColorBrush x:Key="SystemControlHighlightAltBaseHighBrush" Color="#86A48E" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListLowBrush" Color="#263C2D" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListMediumBrush" Color="#365C42" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentLowBrush" Color="#2E5139" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="#365C42" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="#3E704D" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
