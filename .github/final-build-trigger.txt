@@ -1,1 +1,1 @@
-Final Android release build trigger v7.
+2026-10-01 final Android rebuild: Arabic satellites, visible Tenna button, KDUTMT title, green dark theme
